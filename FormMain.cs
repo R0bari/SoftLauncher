@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace SoftLauncher
 {
-    public partial class Form1 : Form
+    public partial class FormMain : Form
     {
         private readonly List<AppEntity> _apps = new List<AppEntity>()
         {
@@ -42,13 +42,16 @@ namespace SoftLauncher
         private readonly FormConfig _formConfig = new FormConfig(
             margin: 25,
             appIconSize: 75,
-            controlButtonSize: 75,
+            controlButtonSize: 25,
             rowCapacity: 4);
+        private readonly ControlButton _quitButton = new ControlButton();
+        private readonly ControlButton _hideButton = new ControlButton();
+        private readonly Button _launchButton = new Button();
 
         private bool _dragFormStatus;
         private int _deltaX, _deltaY;
 
-        public Form1()
+        public FormMain()
         {
             InitializeComponent();
             DeleteFormBorders();
@@ -69,6 +72,7 @@ namespace SoftLauncher
             ControlBox = false;
             Text = "";
         }
+
         private void InitializeAppImages()
         {
             for (int i = 0; i < _apps.Count; ++i)
@@ -86,37 +90,86 @@ namespace SoftLauncher
                 Controls.Add(_apps[i].PictureBox);
             }
         }
+
         private void InitializeFormSize()
         {
             Width = _formConfig.Margin + (_formConfig.Margin + _formConfig.IconSize ) * _formConfig.RowCapacity;
             Height = (_formConfig.Margin * _apps.Count) + _formConfig.ControlButtonSize + 
                 (_apps.Count / _formConfig.RowCapacity + 1) * _formConfig.IconSize + _formConfig.IconSize;
         }
+
         private void InitializeLaunchButton()
         {
-            launchButton.Size = new Size(Width - 2 * _formConfig.Margin, _formConfig.IconSize);
-            launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize);
+            _launchButton.Size = new Size(Width - 2 * _formConfig.Margin, _formConfig.IconSize);
+            _launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize);
+            _launchButton.BackColor = Color.PaleGreen;
+            _launchButton.ForeColor = Color.Black;
+            _launchButton.Font = new Font("San Serif", 16, FontStyle.Regular);
+            Controls.Add(_launchButton);
+            //launchButton.Size = new Size(Width - 2 * _formConfig.Margin, _formConfig.IconSize);
+            //launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize); 
             UpdateLaunchButtonText();
         }
+        private void UpdateLaunchButtonStatus(object sender, EventArgs e)
+        {
+            _launchButton.Enabled = false;
+            foreach (var app in _apps)
+            {
+                if (app.IsActivated())
+                {
+                    _launchButton.Enabled = true;
+                    break;
+                }
+            }
+            UpdateLaunchButtonText();
+        }
+        private void UpdateLaunchButtonText() => _launchButton.Text = _launchButton.Enabled
+                ? "Launch (" + CountActivatedAppIcons() + ")"
+                : "Launch";
+
         private void InitializeControlButtons()
         {
-            quitButton.Size = new Size(_formConfig.ControlButtonSize, _formConfig.ControlButtonSize);
-            quitButton.Location = new Point(Width - _formConfig.Margin - _formConfig.ControlButtonSize, _formConfig.Margin);
-            quitButton.Font = new Font("San Serif", _formConfig.ControlButtonFontSize, FontStyle.Regular);
-            hideButton.Size = new Size(_formConfig.ControlButtonSize, _formConfig.ControlButtonSize);
-            hideButton.Location = new Point(Width - _formConfig.IconSize - _formConfig.ControlButtonSize - 2 * _formConfig.Margin, _formConfig.Margin);
-            hideButton.Font = new Font("San Serif", _formConfig.ControlButtonFontSize, FontStyle.Regular);
+            InitializeQuitButton();
+            InitializeHideButton();
         }
+        private void InitializeQuitButton()
+        {
+            _quitButton.Text = "X";
+            _quitButton.Font = new Font("San Serif", _formConfig.ControlFontSize, FontStyle.Bold);
+            _quitButton.ForeColor = Color.White;
+            _quitButton.Size = new Size(_formConfig.ControlButtonSize, _formConfig.ControlButtonSize);
+            _quitButton.Location = new Point(Width - (_formConfig.Margin + _formConfig.ControlButtonSize), _formConfig.Margin);
+            _quitButton.BackColor = Color.IndianRed;
+            _quitButton.FlatStyle = FlatStyle.Flat;
+            _quitButton.FlatAppearance.BorderColor = Color.Black;
+            Controls.Add(_quitButton);
+        }
+        private void InitializeHideButton()
+        {
+            _hideButton.Text = "-";
+            _hideButton.Size = new Size(_formConfig.ControlButtonSize, _formConfig.ControlButtonSize);
+            _hideButton.Font = new Font("San Serif", _formConfig.ControlFontSize, FontStyle.Bold);
+            _hideButton.Location = new Point(Width - 2 *(_formConfig.Margin + _formConfig.ControlButtonSize), _formConfig.Margin);
+            _hideButton.FlatStyle = FlatStyle.Flat;
+            Controls.Add(_hideButton);
+        }
+
         private void BoundClickHandlers()
         {
             foreach (var app in _apps)
             {
                 app.PictureBox.Click += SwitchApp;
-                app.PictureBox.Click += SetLaunchButtonStatus;
+                app.PictureBox.Click += UpdateLaunchButtonStatus;
             }
-            launchButton.Click += SetLaunchButtonStatus;
+            _launchButton.Click += UpdateLaunchButtonStatus;
+            _quitButton.Click += ExitApp;
+            _hideButton.Click += HideApp;
         }
-        private void UpdateLaunchButtonText() => launchButton.Text = "Launch (" + CountActivatedAppIcons() + ")";
+
+        private int CountActivatedAppIcons() => _apps.Where(app => app.IsActivated()).Count();
+        private void ActivateAllApps() => _apps.ForEach(app => app.Activate());
+        private void DeactivateAllApps() => _apps.ForEach(app => app.Deactivate());
+
         private void SwitchApp(object sender, EventArgs e)
         {
             var picture = (sender as PictureBox);
@@ -125,25 +178,6 @@ namespace SoftLauncher
                 ? currentApp.DeactivatedIconPath
                 : currentApp.ActivatedIconPath;
         }
-        private void SetLaunchButtonStatus(object sender, EventArgs e)
-        {
-            launchButton.Enabled = false;
-            foreach (var app in _apps)
-            {
-                if (app.IsActivated())
-                {
-                    launchButton.Enabled = true;
-                    break;
-                }
-            }
-            launchButton.Text = launchButton.Enabled
-                ? "Launch (" + CountActivatedAppIcons() + ")"
-                : "Launch";
-        }
-        private int CountActivatedAppIcons() => _apps.Where(app => app.IsActivated()).Count();
-
-        private void ActivateAllApps() => _apps.ForEach(app => app.Activate());
-        private void DeactivateAllApps() => _apps.ForEach(app => app.Deactivate());
 
         private void LaunchApps(object sender, EventArgs e)
         {
