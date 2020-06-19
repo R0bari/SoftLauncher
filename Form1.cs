@@ -40,9 +40,9 @@ namespace SoftLauncher
                 executePath: @"E:\Telegram Desktop\Telegram.exe")
         };
         private readonly FormConfig _formConfig = new FormConfig(
-            margin: 20,
+            margin: 25,
             appIconSize: 75,
-            controlButtonSize: 25,
+            controlButtonSize: 75,
             rowCapacity: 4);
 
         private bool _dragFormStatus;
@@ -78,7 +78,7 @@ namespace SoftLauncher
                     Name = _apps[i].AppName,
                     Location = new Point(
                         _formConfig.Margin + i % _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin), 
-                        _formConfig.Margin + i / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin)),
+                        _formConfig.Margin * 2 + _formConfig.ControlButtonSize + i / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin)),
                     Width = _formConfig.IconSize,
                     Height = _formConfig.IconSize,
                     SizeMode = PictureBoxSizeMode.Normal
@@ -88,22 +88,23 @@ namespace SoftLauncher
         }
         private void InitializeFormSize()
         {
-            Width = _formConfig.Margin + ((_formConfig.IconSize + _formConfig.Margin) * _formConfig.RowCapacity);
-            Height = (_formConfig.Margin * 2) + _formConfig.IconSize + (_formConfig.IconSize + _formConfig.Margin) * (_apps.Count / _formConfig.RowCapacity + 1);
+            Width = _formConfig.Margin + (_formConfig.Margin + _formConfig.IconSize ) * _formConfig.RowCapacity;
+            Height = (_formConfig.Margin * _apps.Count) + _formConfig.ControlButtonSize + 
+                (_apps.Count / _formConfig.RowCapacity + 1) * _formConfig.IconSize + _formConfig.IconSize;
         }
         private void InitializeLaunchButton()
         {
-            launchButton.Size = new Size(Width - 2 * _formConfig.Margin - _formConfig.ControlButtonSize - _formConfig.Margin, _formConfig.IconSize);
-            launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - launchButton.Height);
+            launchButton.Size = new Size(Width - 2 * _formConfig.Margin, _formConfig.IconSize);
+            launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize);
             UpdateLaunchButtonText();
         }
         private void InitializeControlButtons()
         {
             quitButton.Size = new Size(_formConfig.ControlButtonSize, _formConfig.ControlButtonSize);
-            quitButton.Location = new Point(Width - _formConfig.Margin - quitButton.Width, Height - _formConfig.Margin - launchButton.Height + 1);
+            quitButton.Location = new Point(Width - _formConfig.Margin - _formConfig.ControlButtonSize, _formConfig.Margin);
             quitButton.Font = new Font("San Serif", _formConfig.ControlButtonFontSize, FontStyle.Regular);
             hideButton.Size = new Size(_formConfig.ControlButtonSize, _formConfig.ControlButtonSize);
-            hideButton.Location = new Point(Width - _formConfig.Margin - hideButton.Width, Height - _formConfig.Margin - hideButton.Height - 1);
+            hideButton.Location = new Point(Width - _formConfig.IconSize - _formConfig.ControlButtonSize - 2 * _formConfig.Margin, _formConfig.Margin);
             hideButton.Font = new Font("San Serif", _formConfig.ControlButtonFontSize, FontStyle.Regular);
         }
         private void BoundClickHandlers()
