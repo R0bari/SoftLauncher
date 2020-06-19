@@ -44,8 +44,9 @@ namespace SoftLauncher
             appIconSize: 75,
             controlButtonSize: 25,
             rowCapacity: 4);
-        private readonly ControlButton _quitButton = new ControlButton();
-        private readonly ControlButton _hideButton = new ControlButton();
+        private readonly ControlButton _quitButton = new ControlButton(index: 0);
+        private readonly ControlButton _hideButton = new ControlButton(index: 1);
+        private readonly ControlButton _addButton = new ControlButton(index: 2);
         private readonly Button _launchButton = new Button();
 
         private bool _dragFormStatus;
@@ -129,31 +130,11 @@ namespace SoftLauncher
 
         private void InitializeControlButtons()
         {
-            InitializeQuitButton();
-            InitializeHideButton();
+            _quitButton.Init("X", Color.IndianRed, _formConfig, this);
+            _hideButton.Init("-", Color.LightGray, _formConfig, this);
+            _addButton.Init("+", Color.PaleGreen, _formConfig, this);
         }
-        private void InitializeQuitButton()
-        {
-            _quitButton.Text = "X";
-            _quitButton.Font = new Font("San Serif", _formConfig.ControlFontSize, FontStyle.Bold);
-            _quitButton.ForeColor = Color.White;
-            _quitButton.Size = new Size(_formConfig.ControlButtonSize, _formConfig.ControlButtonSize);
-            _quitButton.Location = new Point(Width - (_formConfig.Margin + _formConfig.ControlButtonSize), _formConfig.Margin);
-            _quitButton.BackColor = Color.IndianRed;
-            _quitButton.FlatStyle = FlatStyle.Flat;
-            _quitButton.FlatAppearance.BorderColor = Color.Black;
-            Controls.Add(_quitButton);
-        }
-        private void InitializeHideButton()
-        {
-            _hideButton.Text = "-";
-            _hideButton.Size = new Size(_formConfig.ControlButtonSize, _formConfig.ControlButtonSize);
-            _hideButton.Font = new Font("San Serif", _formConfig.ControlFontSize, FontStyle.Bold);
-            _hideButton.Location = new Point(Width - 2 *(_formConfig.Margin + _formConfig.ControlButtonSize), _formConfig.Margin);
-            _hideButton.FlatStyle = FlatStyle.Flat;
-            Controls.Add(_hideButton);
-        }
-
+        
         private void BoundClickHandlers()
         {
             foreach (var app in _apps)

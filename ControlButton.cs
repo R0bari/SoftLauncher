@@ -5,13 +5,21 @@ namespace SoftLauncher
 {
     public class ControlButton : Button
     {
-        public ControlButton() : base() { }
-        public ControlButton(string text = "Control", int width = 25, int height = 25) : base()
+        public int Index { get; }
+        public ControlButton(int index) : base() 
+        {
+            Index = index;
+        }
+        public void Init(string text, Color backColor, FormConfig config, Form form)
         {
             Text = text;
-            Width = width;
-            Height = height;
-            Font = new Font("San Serif", Width / 2 - 2, FontStyle.Regular);
+            Size = new Size(config.ControlButtonSize, config.ControlButtonSize);
+            Font = new Font("San Serif", config.ControlFontSize, FontStyle.Bold);
+            Location = new Point(form.Width - (Index + 1) * (config.Margin + config.ControlButtonSize), config.Margin);
+            BackColor = backColor;
+            FlatStyle = FlatStyle.Flat;
+
+            form.Controls.Add(this);
         }
     }
 }
