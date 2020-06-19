@@ -57,10 +57,7 @@ namespace SoftLauncher
             SetLaunchButton();
             SetControlButtons();
             BoundClickButtonHandlers();
-
-            launchButton.Text = "Launch (" + CountActivatedAppIcons() + ")";
         }
-
 
         private void DeleteFormBorders()
         {
@@ -92,6 +89,7 @@ namespace SoftLauncher
         {
             launchButton.Location = new Point(_defaultMargin, Height - _defaultMargin - launchButton.Height);
             launchButton.Size = new Size(Width - 2 * _defaultMargin - _controlButtonSize - _defaultMargin, _iconSize);
+            launchButton.Text = "Launch (" + CountActivatedAppIcons() + ")";
         }
         private void SetControlButtons()
         {
