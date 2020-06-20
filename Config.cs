@@ -13,7 +13,7 @@ namespace SoftLauncher
             Margin = margin;
             IconSize = iconSize;
             ControlButtonSize = controlButtonSize;
-            ControlFontSize = ControlButtonSize / 2 - 2;
+            ControlFontSize = ControlButtonSize / 2;
             RowCapacity = rowCapacity;
         }
     }

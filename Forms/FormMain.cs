@@ -31,7 +31,7 @@ namespace SoftLauncher
                 executePath: @"E:\Telegram Desktop\Telegram.exe")
         };
         private readonly Config _formConfig = new Config(
-            margin: 25,
+            margin: 20,
             iconSize: 50,
             controlButtonSize: 25,
             rowCapacity: 3);
@@ -100,21 +100,24 @@ namespace SoftLauncher
             _launchButton.BackColor = Color.PaleGreen;
             _launchButton.ForeColor = Color.Black;
             _launchButton.FlatStyle = FlatStyle.Flat;
-            _launchButton.Font = new Font("San Serif", 16, FontStyle.Regular);
+            _launchButton.Font = new Font("San Serif", _formConfig.ControlFontSize, FontStyle.Regular);
             UpdateLaunchButtonText();
         }
-        private void UpdateLaunchButtonStatus(object sender, EventArgs e)
+        private void UpdateLaunchButtonStatus(object sender, MouseEventArgs e)
         {
-            _launchButton.Enabled = false;
-            foreach (var app in _apps)
+            if (e.Button == MouseButtons.Left)
             {
-                if (app.IsActivated)
+                _launchButton.Enabled = false;
+                foreach (var app in _apps)
                 {
-                    _launchButton.Enabled = true;
-                    break;
+                    if (app.IsActivated)
+                    {
+                        _launchButton.Enabled = true;
+                        break;
+                    }
                 }
+                UpdateLaunchButtonText();
             }
-            UpdateLaunchButtonText();
         }
         private void UpdateLaunchButtonText() => _launchButton.Text = _launchButton.Enabled
                 ? "Launch (" + CountActivatedAppIcons() + ")"
@@ -140,20 +143,23 @@ namespace SoftLauncher
         private void ActivateAllApps() => _apps.ForEach(app => app.Activate());
         private void DeactivateAllApps() => _apps.ForEach(app => app.Deactivate());
 
-        private void SwitchApp(object sender, EventArgs e)
+        private void SwitchApp(object sender, MouseEventArgs e)
         {
-            var picture = (sender as PictureBox);
-            var currentApp = _apps.Find(app => app.PictureBox == picture);
-            if (currentApp.IsActivated)
+            if (e.Button == MouseButtons.Left)
             {
-                currentApp.Deactivate();
+                var picture = (sender as PictureBox);
+                var currentApp = _apps.Find(app => app.PictureBox == picture);
+                if (currentApp.IsActivated)
+                {
+                    currentApp.Deactivate();
+                }
+                else
+                {
+                    currentApp.Activate();
+                }
             }
-            else
-            {
-                currentApp.Activate();
-            }
-
         }
+
 
         private void LaunchApps(object sender, EventArgs e)
         {
@@ -235,8 +241,8 @@ namespace SoftLauncher
             _apps[index].PictureBox.Width = _formConfig.IconSize;
             _apps[index].PictureBox.Height = _formConfig.IconSize;
             _apps[index].SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
-            _apps[index].PictureBox.Click += SwitchApp;
-            _apps[index].PictureBox.Click += UpdateLaunchButtonStatus;
+            _apps[index].PictureBox.MouseClick += SwitchApp;
+            _apps[index].PictureBox.MouseClick += UpdateLaunchButtonStatus;
         }
     }
 }
