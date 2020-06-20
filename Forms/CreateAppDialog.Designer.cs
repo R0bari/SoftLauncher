@@ -112,7 +112,7 @@
             this.clearAppPath.TabIndex = 7;
             this.clearAppPath.Text = "X";
             this.clearAppPath.UseVisualStyleBackColor = false;
-            this.clearAppPath.Click += new System.EventHandler(this.ClearAppPath);
+            this.clearAppPath.Click += new System.EventHandler(this.Clear);
             // 
             // openAppPath
             // 

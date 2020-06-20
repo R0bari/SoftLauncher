@@ -43,7 +43,7 @@ namespace SoftLauncher.Forms
         }
         private void ChangeAddButtonStatus(object sender, EventArgs e)
         {
-            addButton.Enabled = (_appName.Text.Trim() != "" && appPath.Text != "")
+            addButton.Enabled = (_appName.Text.Trim() != _appName.Placeholder && appPath.Text != "")
                 ? true
                 : false;
         }
@@ -61,12 +61,20 @@ namespace SoftLauncher.Forms
             {
                 return;
             }
-            appPath.Text = openAppPath.FileName;
-            _appName.Text = GetFilenameFromPath(openAppPath.FileName);
+            try
+            {
+                _appName.Text = GetFilenameFromPath(openAppPath.FileName);
+                appPath.Text = openAppPath.FileName;
+            }
+            catch (WrongFileFormatException ex)
+            {
+                MessageBox.Show(ex.Message, ex.MessageCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
-        private void ClearAppPath(object sender, EventArgs e)
+        private void Clear(object sender, EventArgs e)
         {
-            appPath.Text = "";
+            appPath.Clear();
+            _appName.Clear();
         }
 
         private void ClickForm(object sender, EventArgs e)
@@ -99,9 +107,19 @@ namespace SoftLauncher.Forms
 
         private string GetFilenameFromPath(string path)
         {
-            Regex regex = new Regex(@"(\w*).exe");
+            if (!IsCorrectFormat(path))
+            {
+                throw new WrongFileFormatException();
+            }
+            Regex regex = new Regex(@"\\((\w|\s)*).exe");
             var match = regex.Match(path);
             return char.ToUpper(match.Groups[1].Value[0]) + match.Groups[1].Value.Substring(1);
+        }
+        private bool IsCorrectFormat(string path)
+        {
+            Regex regex = new Regex(@"(\w*).exe");
+            var match = regex.Match(path);
+            return match != null && match.Groups[1].Value.Trim() != "";
         }
     }
 }

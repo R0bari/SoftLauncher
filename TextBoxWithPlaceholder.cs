@@ -16,8 +16,8 @@ namespace SoftLauncher
             set => _placeholder = Text = value;
         }
         public TextBoxWithPlaceholder() : base() {
-            GotFocus += RemoveText;
-            LostFocus += AddText;
+            GotFocus += RemovePlaceholder;
+            LostFocus += AddPlaceholder;
         }
         public TextBoxWithPlaceholder(Point location, Size size, string placeholder, Font font) : base()
         {
@@ -28,23 +28,24 @@ namespace SoftLauncher
             Text = Placeholder;
             Font = font;
 
-            GotFocus += RemoveText;
-            LostFocus += AddText;
+            GotFocus += RemovePlaceholder;
+            LostFocus += AddPlaceholder;
         }
 
-        private void AddText(object sender, EventArgs e)
+        private void AddPlaceholder(object sender, EventArgs e)
         {
             if (Text.Trim().Length == 0)
             {
                 Text = Placeholder;
             }
         }
-        private void RemoveText(object sender, EventArgs e)
+        private void RemovePlaceholder(object sender, EventArgs e)
         {
             if (Text.Trim().Equals(Placeholder))
             {
                 Text = "";
             }
         }
+        public new void Clear() => Text = Placeholder;
     }
 }

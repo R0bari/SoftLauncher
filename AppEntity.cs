@@ -37,10 +37,8 @@ namespace SoftLauncher
             SetSize(size);
         }
 
-        public void SetSize(Size size)
-        {
-            PictureBox.Size = size;
-        }
+        public void SetSize(Size size) => PictureBox.Size = size;
+
         public void Activate()
         {
             PictureBox.BackColor = Color.PaleGreen;
@@ -54,10 +52,6 @@ namespace SoftLauncher
             IsActivated = false;
         }
 
-        public object Clone()
-        {
-            var newApp = new AppEntity(AppName, ExecutePath);
-            return newApp;
-        }
+        public object Clone() => new AppEntity(AppName, ExecutePath);
     }
 }

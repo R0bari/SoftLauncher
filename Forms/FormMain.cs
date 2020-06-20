@@ -131,8 +131,8 @@ namespace SoftLauncher
         {
             foreach (var app in _apps)
             {
-                app.PictureBox.Click += SwitchApp;
-                app.PictureBox.Click += UpdateLaunchButtonStatus;
+                app.PictureBox.MouseClick += SwitchApp;
+                app.PictureBox.MouseClick += UpdateLaunchButtonStatus;
             }
         }
 
