@@ -12,6 +12,11 @@ namespace SoftLauncher
 {
     public partial class FormMain : Form
     {
+        private readonly Config _formConfig = new Config(
+               margin: 20,
+               iconSize: 50,
+               controlButtonSize: 25,
+               rowCapacity: 3);
         private readonly List<AppEntity> _apps = new List<AppEntity>()
         {
             new AppEntity(
@@ -30,11 +35,6 @@ namespace SoftLauncher
                 appName: "Telegram",
                 executePath: @"E:\Telegram Desktop\Telegram.exe")
         };
-        private readonly Config _formConfig = new Config(
-            margin: 20,
-            iconSize: 50,
-            controlButtonSize: 25,
-            rowCapacity: 3);
         private readonly ControlButton _quitButton = new ControlButton(index: 0);
         private readonly ControlButton _hideButton = new ControlButton(index: 1);
         private readonly ControlButton _addButton = new ControlButton(index: 2);
@@ -46,62 +46,65 @@ namespace SoftLauncher
         public FormMain()
         {
             InitializeComponent();
-            DeleteFormBorders();
+            DeleteFormBorders(this);
 
-            InitAppImages();
-            InitFormSize();
-            InitLaunchButton();
-            InitControlButtons();
+            InitAppImages(_apps);
+            InitFormSize(this);
+            InitLaunchButton(_launchButton);
+            InitControlButtons(
+                quitButton: _quitButton, 
+                addButton: _addButton, 
+                hideButton: _hideButton);
 
-            BoundClickHandlers();
-            ActivateAllApps();
-            UpdateLaunchButtonText();
+            BoundClickHandlers(switchApp: SwitchApp, updateLaunchButtonStatus: UpdateLaunchButtonStatus);
+            ActivateAllApps(_apps);
+            UpdateLaunchButtonText(_launchButton);
         }
 
-        private void DeleteFormBorders()
+        private void DeleteFormBorders(FormMain form)
         {
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            ControlBox = false;
-            Text = "";
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.ControlBox = false;
+            form.Text = "";
         }
 
-        private void InitAppImages()
+        private void InitAppImages(List<AppEntity> apps)
         {
-            for (int i = 0; i < _apps.Count; ++i)
+            for (int i = 0; i < apps.Count; ++i)
             {
-                _apps[i].PictureBox.Name = _apps[i].AppName;
-                _apps[i].PictureBox.Location = new Point(
+                apps[i].PictureBox.Name = _apps[i].AppName;
+                apps[i].PictureBox.Location = new Point(
                     _formConfig.Margin + i % _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin),
                     _formConfig.Margin * 2 + _formConfig.ControlButtonSize + i / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin));
-                _apps[i].PictureBox.Image = Icon.ExtractAssociatedIcon(_apps[i].ExecutePath).ToBitmap();
-                _apps[i].SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
-                _apps[i].PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                apps[i].PictureBox.Image = Icon.ExtractAssociatedIcon(_apps[i].ExecutePath).ToBitmap();
+                apps[i].SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
+                apps[i].PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                 Controls.Add(_apps[i].PictureBox);
             }
         }
 
-        private void InitFormSize()
+        private void InitFormSize(FormMain form)
         {
-            Width = _formConfig.Margin + (_formConfig.Margin + _formConfig.IconSize) * _formConfig.RowCapacity;
-            Height = _formConfig.Margin * 2 + _formConfig.ControlButtonSize + ((_formConfig.IconSize + _formConfig.Margin) * ((_apps.Count - 1) / _formConfig.RowCapacity + 1)) +
+            form.Width = _formConfig.Margin + (_formConfig.Margin + _formConfig.IconSize) * _formConfig.RowCapacity;
+            form.Height = _formConfig.Margin * 2 + _formConfig.ControlButtonSize + ((_formConfig.IconSize + _formConfig.Margin) * ((_apps.Count - 1) / _formConfig.RowCapacity + 1)) +
                 _formConfig.IconSize + _formConfig.Margin;
         }
 
-        private void InitLaunchButton()
+        private void InitLaunchButton(Button launchButton)
         {
-            InitLaunchButtonProps();
-            _launchButton.Click += LaunchApps;
-            Controls.Add(_launchButton);
+            InitLaunchButtonProps(launchButton);
+            launchButton.Click += LaunchApps;
+            Controls.Add(launchButton);
         }
-        private void InitLaunchButtonProps()
+        private void InitLaunchButtonProps(Button launchButton)
         {
-            _launchButton.Size = new Size(Width - 2 * _formConfig.Margin, _formConfig.IconSize);
-            _launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize);
-            _launchButton.BackColor = Color.PaleGreen;
-            _launchButton.ForeColor = Color.Black;
-            _launchButton.FlatStyle = FlatStyle.Flat;
-            _launchButton.Font = new Font("San Serif", _formConfig.ControlFontSize, FontStyle.Regular);
-            UpdateLaunchButtonText();
+            launchButton.Size = new Size(Width - 2 * _formConfig.Margin, _formConfig.IconSize);
+            launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize);
+            launchButton.BackColor = Color.PaleGreen;
+            launchButton.ForeColor = Color.Black;
+            launchButton.FlatStyle = FlatStyle.Flat;
+            launchButton.Font = new Font("San Serif", _formConfig.ControlFontSize, FontStyle.Regular);
+            UpdateLaunchButtonText(launchButton);
         }
         private void UpdateLaunchButtonStatus(object sender, MouseEventArgs e)
         {
@@ -116,32 +119,32 @@ namespace SoftLauncher
                         break;
                     }
                 }
-                UpdateLaunchButtonText();
+                UpdateLaunchButtonText(_launchButton);
             }
         }
-        private void UpdateLaunchButtonText() => _launchButton.Text = _launchButton.Enabled
+        private void UpdateLaunchButtonText(Button launchButton) => launchButton.Text = launchButton.Enabled
                 ? "Launch (" + CountActivatedAppIcons() + ")"
                 : "Launch";
 
-        private void InitControlButtons()
+        private void InitControlButtons(ControlButton quitButton, ControlButton hideButton, ControlButton addButton)
         {
-            _quitButton.Init("X", Color.IndianRed, _formConfig, this, ExitApp);
-            _hideButton.Init("-", Color.LightGray, _formConfig, this, HideApp);
-            _addButton.Init("+", Color.PaleGreen, _formConfig, this, AddApp);
+            quitButton.Init("X", Color.IndianRed, _formConfig, this, ExitApp);
+            hideButton.Init("-", Color.LightGray, _formConfig, this, HideApp);
+            addButton.Init("+", Color.PaleGreen, _formConfig, this, AddApp);
         }
 
-        private void BoundClickHandlers()
+        private void BoundClickHandlers(MouseEventHandler switchApp, MouseEventHandler updateLaunchButtonStatus)
         {
             foreach (var app in _apps)
             {
-                app.PictureBox.MouseClick += SwitchApp;
-                app.PictureBox.MouseClick += UpdateLaunchButtonStatus;
+                app.PictureBox.MouseClick += switchApp;
+                app.PictureBox.MouseClick += updateLaunchButtonStatus;
             }
         }
 
         private int CountActivatedAppIcons() => _apps.Where(app => app.IsActivated).Count();
-        private void ActivateAllApps() => _apps.ForEach(app => app.Activate());
-        private void DeactivateAllApps() => _apps.ForEach(app => app.Deactivate());
+        private void ActivateAllApps(List<AppEntity> apps) => apps.ForEach(app => app.Activate());
+        private void DeactivateAllApps(List<AppEntity> apps) => apps.ForEach(app => app.Deactivate());
 
         private void SwitchApp(object sender, MouseEventArgs e)
         {
@@ -170,7 +173,7 @@ namespace SoftLauncher
                     Process.Start(app.ExecutePath);
                 }
             }
-            DeactivateAllApps();
+            DeactivateAllApps(_apps);
         }
 
         private void LoadForm(object sender, EventArgs e) => RunWithAdminRight();
@@ -228,8 +231,8 @@ namespace SoftLauncher
                 _apps.Add(newApp as AppEntity);
                 Controls.Add((newApp as AppEntity).PictureBox);
                 InitIconConfig(newApp as AppEntity);
-                InitFormSize();
-                InitLaunchButtonProps();
+                InitFormSize(this);
+                InitLaunchButtonProps(_launchButton);
             }
         }
         private void InitIconConfig(AppEntity app)
