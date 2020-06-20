@@ -18,6 +18,7 @@ namespace SoftLauncher
             Location = new Point(form.Width - (Index + 1) * (config.Margin + config.ControlButtonSize), config.Margin);
             BackColor = backColor;
             FlatStyle = FlatStyle.Flat;
+            FlatAppearance.BorderColor = Color.Black;
 
             form.Controls.Add(this);
         }

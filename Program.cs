@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SoftLauncher.Forms;
+using System;
 using System.Windows.Forms;
 
 namespace SoftLauncher
@@ -13,7 +14,7 @@ namespace SoftLauncher
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormMain());
+            Application.Run(new CreateAppDialog());
         }
     }
 }

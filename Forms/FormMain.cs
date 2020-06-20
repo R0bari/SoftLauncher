@@ -15,35 +15,30 @@ namespace SoftLauncher
         {
             new AppEntity(
                 appName: "Skype",
-                deactivatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\skypeIcon.png",
-                activatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\skypeIconActivated.png",
+                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\skypeIcon.png",
                 executePath: @"C:\Program Files (x86)\Microsoft\Skype for Desktop\Skype.exe"),
             new AppEntity(
                 appName: "Discord",
-                deactivatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\discordIcon.png",
-                activatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\discordIconActivated.png",
+                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\discordIcon.png",
                 executePath: @"C:\Users\Eugene\AppData\Local\Discord\app-0.0.305\Discord.exe"),
             new AppEntity(
                 appName: "Visual Studio",
-                deactivatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\vsIcon.png",
-                activatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\vsIconActivated.png",
+                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\vsIcon.png",
                 executePath: @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"),
             new AppEntity(
                 appName: "Visual Studio Code",
-                deactivatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\vsCodeIcon.png",
-                activatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\vsCodeIconActivated.png",
+                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\vsCodeIcon.png",
                 executePath: @"C:\Users\Eugene\AppData\Local\Programs\Microsoft VS Code\Code.exe"),
             new AppEntity(
                 appName: "Telegram",
-                deactivatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\telegramIcon.png",
-                activatedIconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\telegramIconActivated.png",
+                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\telegramIcon.png",
                 executePath: @"E:\Telegram Desktop\Telegram.exe")
         };
         private readonly FormConfig _formConfig = new FormConfig(
             margin: 25,
             appIconSize: 75,
             controlButtonSize: 25,
-            rowCapacity: 4);
+            rowCapacity: 3);
         private readonly ControlButton _quitButton = new ControlButton(index: 0);
         private readonly ControlButton _hideButton = new ControlButton(index: 1);
         private readonly ControlButton _addButton = new ControlButton(index: 2);
@@ -78,25 +73,24 @@ namespace SoftLauncher
         {
             for (int i = 0; i < _apps.Count; ++i)
             {
-                _apps[i].PictureBox = new PictureBox
-                {
-                    Name = _apps[i].AppName,
-                    Location = new Point(
-                        _formConfig.Margin + i % _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin), 
-                        _formConfig.Margin * 2 + _formConfig.ControlButtonSize + i / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin)),
-                    Width = _formConfig.IconSize,
-                    Height = _formConfig.IconSize,
-                    SizeMode = PictureBoxSizeMode.Normal
-                };
+                _apps[i].PictureBox.Name = _apps[i].AppName;
+                _apps[i].PictureBox.Location = new Point(
+                    _formConfig.Margin + i % _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin),
+                    _formConfig.Margin * 2 + _formConfig.ControlButtonSize + i / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin));
+                _apps[i].PictureBox.Width = _formConfig.IconSize;
+                _apps[i].PictureBox.Height = _formConfig.IconSize;
+                _apps[i].PictureBox.SizeMode = PictureBoxSizeMode.Normal;
+                _apps[i].PictureBox.ImageLocation = _apps[i].IconPath;
+
                 Controls.Add(_apps[i].PictureBox);
             }
         }
 
         private void InitializeFormSize()
         {
-            Width = _formConfig.Margin + (_formConfig.Margin + _formConfig.IconSize ) * _formConfig.RowCapacity;
-            Height = (_formConfig.Margin * _apps.Count) + _formConfig.ControlButtonSize + 
-                (_apps.Count / _formConfig.RowCapacity + 1) * _formConfig.IconSize + _formConfig.IconSize;
+            Width = _formConfig.Margin + (_formConfig.Margin + _formConfig.IconSize) * _formConfig.RowCapacity;
+            Height = (_formConfig.Margin * _apps.Count) + _formConfig.ControlButtonSize +
+                ((_apps.Count - 1) / _formConfig.RowCapacity + 1) * _formConfig.IconSize + _formConfig.IconSize;
         }
 
         private void InitializeLaunchButton()
@@ -105,10 +99,9 @@ namespace SoftLauncher
             _launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize);
             _launchButton.BackColor = Color.PaleGreen;
             _launchButton.ForeColor = Color.Black;
+            _launchButton.FlatStyle = FlatStyle.Flat;
             _launchButton.Font = new Font("San Serif", 16, FontStyle.Regular);
             Controls.Add(_launchButton);
-            //launchButton.Size = new Size(Width - 2 * _formConfig.Margin, _formConfig.IconSize);
-            //launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize); 
             UpdateLaunchButtonText();
         }
         private void UpdateLaunchButtonStatus(object sender, EventArgs e)
@@ -116,7 +109,7 @@ namespace SoftLauncher
             _launchButton.Enabled = false;
             foreach (var app in _apps)
             {
-                if (app.IsActivated())
+                if (app.IsActivated)
                 {
                     _launchButton.Enabled = true;
                     break;
@@ -134,7 +127,7 @@ namespace SoftLauncher
             _hideButton.Init("-", Color.LightGray, _formConfig, this);
             _addButton.Init("+", Color.PaleGreen, _formConfig, this);
         }
-        
+
         private void BoundClickHandlers()
         {
             foreach (var app in _apps)
@@ -147,7 +140,7 @@ namespace SoftLauncher
             _hideButton.Click += HideApp;
         }
 
-        private int CountActivatedAppIcons() => _apps.Where(app => app.IsActivated()).Count();
+        private int CountActivatedAppIcons() => _apps.Where(app => app.IsActivated).Count();
         private void ActivateAllApps() => _apps.ForEach(app => app.Activate());
         private void DeactivateAllApps() => _apps.ForEach(app => app.Deactivate());
 
@@ -155,16 +148,22 @@ namespace SoftLauncher
         {
             var picture = (sender as PictureBox);
             var currentApp = _apps.Find(app => app.PictureBox == picture);
-            currentApp.PictureBox.ImageLocation = currentApp.IsActivated()
-                ? currentApp.DeactivatedIconPath
-                : currentApp.ActivatedIconPath;
+            if (currentApp.IsActivated)
+            {
+                currentApp.Deactivate();
+            }
+            else
+            {
+                currentApp.Activate();
+            }
+
         }
 
         private void LaunchApps(object sender, EventArgs e)
         {
             foreach (var app in _apps)
             {
-                if (app.IsActivated())
+                if (app.IsActivated)
                 {
                     Process.Start(app.ExecutePath);
                 }
@@ -172,7 +171,7 @@ namespace SoftLauncher
             DeactivateAllApps();
         }
 
-        private void LoadForm(object sender, EventArgs e) => RunWithAdminRight();
+        //private void LoadForm(object sender, EventArgs e) => RunWithAdminRight();
         private void RunWithAdminRight()
         {
             if (HasAdminRight())
