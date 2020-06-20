@@ -1,10 +1,11 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace SoftLauncher
 {
-    public class AppEntity
+    public class AppEntity : ICloneable
     {
         public string AppName { get; set; }
         public string IconPath { get; set; }
@@ -23,8 +24,6 @@ namespace SoftLauncher
                 ImageLocation = IconPath,
                 Image = Image.FromFile(IconPath)
             };
-            var bmp = new Bitmap(PictureBox.Image);
-            bmp.MakeTransparent();
         }
 
         public void Activate()
@@ -38,6 +37,13 @@ namespace SoftLauncher
             PictureBox.BackColor = Color.Transparent;
             PictureBox.BorderStyle = BorderStyle.None;
             IsActivated = false;
+        }
+
+        public object Clone()
+        {
+            var newApp = new AppEntity(AppName, IconPath, ExecutePath);
+            newApp.PictureBox = PictureBox;
+            return newApp;
         }
     }
 }

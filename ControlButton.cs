@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace SoftLauncher
@@ -10,7 +11,7 @@ namespace SoftLauncher
         {
             Index = index;
         }
-        public void Init(string text, Color backColor, FormConfig config, Form form)
+        public void Init(string text, Color backColor, FormConfig config, Form form, EventHandler action = null)
         {
             Text = text;
             Size = new Size(config.ControlButtonSize, config.ControlButtonSize);
@@ -19,6 +20,7 @@ namespace SoftLauncher
             BackColor = backColor;
             FlatStyle = FlatStyle.Flat;
             FlatAppearance.BorderColor = Color.Black;
+            Click += action;
 
             form.Controls.Add(this);
         }

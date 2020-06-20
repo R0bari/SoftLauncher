@@ -37,6 +37,7 @@
             this.chooseApp = new System.Windows.Forms.Button();
             this.appPath = new System.Windows.Forms.TextBox();
             this.clearAppPath = new System.Windows.Forms.Button();
+            this.openAppPath = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // cancelButton
@@ -155,6 +156,10 @@
             this.clearAppPath.UseVisualStyleBackColor = false;
             this.clearAppPath.Click += new System.EventHandler(this.ClearAppPath);
             // 
+            // openAppPath
+            // 
+            this.openAppPath.Filter = "Exe files(*.exe)|*.exe|All files(*.*)|*.*";
+            // 
             // CreateAppDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -191,5 +196,6 @@
         private System.Windows.Forms.Button chooseApp;
         private System.Windows.Forms.TextBox appPath;
         private System.Windows.Forms.Button clearAppPath;
+        private System.Windows.Forms.OpenFileDialog openAppPath;
     }
 }

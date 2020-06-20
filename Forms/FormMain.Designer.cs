@@ -40,7 +40,6 @@
             this.Name = "FormMain";
             this.Opacity = 0.98D;
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.LoadForm);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.KeepForm);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DragForm);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UnkeepForm);

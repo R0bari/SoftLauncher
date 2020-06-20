@@ -69,11 +69,11 @@ namespace SoftLauncher.Forms
 
         private void ChooseAppPath(object sender, EventArgs e)
         {
-            if (openIcon.ShowDialog() == DialogResult.Cancel)
+            if (openAppPath.ShowDialog() == DialogResult.Cancel)
             {
                 return;
             }
-            appPath.Text = openIcon.FileName;
+            appPath.Text = openAppPath.FileName;
         }
         private void ClearAppPath(object sender, EventArgs e)
         {
@@ -98,6 +98,8 @@ namespace SoftLauncher.Forms
             appEntity.AppName = _appName.Text;
             appEntity.IconPath = iconPath.Text;
             appEntity.ExecutePath = appPath.Text;
+            appEntity.PictureBox = new TransparentPictureBox();
+            appEntity.PictureBox.Image = Image.FromFile(appEntity.IconPath);
         }
 
         private void DragForm(object sender, MouseEventArgs e)

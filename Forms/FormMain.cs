@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SoftLauncher.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -101,6 +102,7 @@ namespace SoftLauncher
             _launchButton.ForeColor = Color.Black;
             _launchButton.FlatStyle = FlatStyle.Flat;
             _launchButton.Font = new Font("San Serif", 16, FontStyle.Regular);
+            _launchButton.Click += LaunchApps;
             Controls.Add(_launchButton);
             UpdateLaunchButtonText();
         }
@@ -123,9 +125,9 @@ namespace SoftLauncher
 
         private void InitializeControlButtons()
         {
-            _quitButton.Init("X", Color.IndianRed, _formConfig, this);
-            _hideButton.Init("-", Color.LightGray, _formConfig, this);
-            _addButton.Init("+", Color.PaleGreen, _formConfig, this);
+            _quitButton.Init("X", Color.IndianRed, _formConfig, this, ExitApp);
+            _hideButton.Init("-", Color.LightGray, _formConfig, this, HideApp);
+            _addButton.Init("+", Color.PaleGreen, _formConfig, this, AddApp);
         }
 
         private void BoundClickHandlers()
@@ -135,9 +137,6 @@ namespace SoftLauncher
                 app.PictureBox.Click += SwitchApp;
                 app.PictureBox.Click += UpdateLaunchButtonStatus;
             }
-            _launchButton.Click += UpdateLaunchButtonStatus;
-            _quitButton.Click += ExitApp;
-            _hideButton.Click += HideApp;
         }
 
         private int CountActivatedAppIcons() => _apps.Where(app => app.IsActivated).Count();
@@ -217,5 +216,28 @@ namespace SoftLauncher
 
         private void ExitApp(object sender, EventArgs e) => Application.Exit();
         private void HideApp(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
+        private void AddApp(object sender, EventArgs e)
+        {
+            CreateAppDialog createAppDialog = new CreateAppDialog();
+            if (createAppDialog.ShowDialog() == DialogResult.OK)
+            {
+                var newApp = createAppDialog.appEntity.Clone();
+                _apps.Add(newApp as AppEntity);
+                Controls.Add((newApp as AppEntity).PictureBox);
+                InitIconConfig(newApp as AppEntity);
+                (newApp as AppEntity).PictureBox.Click += SwitchApp;
+                (newApp as AppEntity).PictureBox.Click += UpdateLaunchButtonStatus;
+            }
+        }
+        private void InitIconConfig(AppEntity app)
+        {
+            var index = _apps.FindIndex(a => a == app);
+            _apps[index].PictureBox.Location = new Point(
+                    _formConfig.Margin + index % _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin),
+                    _formConfig.Margin * 2 + _formConfig.ControlButtonSize + index / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin));
+            _apps[index].PictureBox.Width = _formConfig.IconSize;
+            _apps[index].PictureBox.Height = _formConfig.IconSize;
+            _apps[index].PictureBox.SizeMode = PictureBoxSizeMode.Normal;
+        }
     }
 }
