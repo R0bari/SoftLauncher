@@ -29,11 +29,14 @@
         private void InitializeComponent()
         {
             this.cancelButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.addButton = new System.Windows.Forms.Button();
             this.openIcon = new System.Windows.Forms.OpenFileDialog();
-            this.button2 = new System.Windows.Forms.Button();
-            this.deactivatedPath = new System.Windows.Forms.TextBox();
-            this.clearDeactivatedIconButton = new System.Windows.Forms.Button();
+            this.chooseIconButton = new System.Windows.Forms.Button();
+            this.iconPath = new System.Windows.Forms.TextBox();
+            this.clearIconButton = new System.Windows.Forms.Button();
+            this.chooseApp = new System.Windows.Forms.Button();
+            this.appPath = new System.Windows.Forms.TextBox();
+            this.clearAppPath = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cancelButton
@@ -45,7 +48,7 @@
             this.cancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cancelButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cancelButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.cancelButton.Location = new System.Drawing.Point(215, 206);
+            this.cancelButton.Location = new System.Drawing.Point(215, 188);
             this.cancelButton.Margin = new System.Windows.Forms.Padding(3, 3, 20, 20);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(164, 56);
@@ -53,77 +56,125 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = false;
             // 
-            // button1
+            // addButton
             // 
-            this.button1.BackColor = System.Drawing.Color.PaleGreen;
-            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.Location = new System.Drawing.Point(29, 206);
-            this.button1.Margin = new System.Windows.Forms.Padding(20);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(163, 56);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Add";
-            this.button1.UseVisualStyleBackColor = false;
+            this.addButton.BackColor = System.Drawing.Color.PaleGreen;
+            this.addButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.addButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.addButton.Enabled = false;
+            this.addButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.addButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.addButton.Location = new System.Drawing.Point(29, 188);
+            this.addButton.Margin = new System.Windows.Forms.Padding(20);
+            this.addButton.Name = "addButton";
+            this.addButton.Size = new System.Drawing.Size(163, 56);
+            this.addButton.TabIndex = 1;
+            this.addButton.Text = "Add";
+            this.addButton.UseVisualStyleBackColor = false;
+            this.addButton.Click += new System.EventHandler(this.AddApp);
             // 
             // openIcon
             // 
             this.openIcon.Filter = "Image files(*.jpg)|*.jpg|Image files(*.png)|*.png|All files(*.*)|*.*";
             // 
-            // button2
+            // chooseIconButton
             // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(29, 29);
-            this.button2.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(128, 28);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Choose Icon";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.ChooseDeactivatedIcon);
+            this.chooseIconButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.chooseIconButton.Location = new System.Drawing.Point(29, 85);
+            this.chooseIconButton.Margin = new System.Windows.Forms.Padding(20);
+            this.chooseIconButton.Name = "chooseIconButton";
+            this.chooseIconButton.Size = new System.Drawing.Size(128, 28);
+            this.chooseIconButton.TabIndex = 2;
+            this.chooseIconButton.Text = "Choose Icon";
+            this.chooseIconButton.UseVisualStyleBackColor = true;
+            this.chooseIconButton.Click += new System.EventHandler(this.ChooseIcon);
             // 
-            // deactivatedPath
+            // iconPath
             // 
-            this.deactivatedPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.deactivatedPath.Location = new System.Drawing.Point(180, 29);
-            this.deactivatedPath.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
-            this.deactivatedPath.Multiline = true;
-            this.deactivatedPath.Name = "deactivatedPath";
-            this.deactivatedPath.ReadOnly = true;
-            this.deactivatedPath.Size = new System.Drawing.Size(148, 28);
-            this.deactivatedPath.TabIndex = 3;
+            this.iconPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.iconPath.Location = new System.Drawing.Point(180, 86);
+            this.iconPath.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
+            this.iconPath.Multiline = true;
+            this.iconPath.Name = "iconPath";
+            this.iconPath.ReadOnly = true;
+            this.iconPath.Size = new System.Drawing.Size(148, 28);
+            this.iconPath.TabIndex = 3;
             // 
-            // clearDeactivatedIconButton
+            // clearIconButton
             // 
-            this.clearDeactivatedIconButton.BackColor = System.Drawing.Color.IndianRed;
-            this.clearDeactivatedIconButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.clearDeactivatedIconButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.clearDeactivatedIconButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.clearDeactivatedIconButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.clearDeactivatedIconButton.Location = new System.Drawing.Point(351, 29);
-            this.clearDeactivatedIconButton.Margin = new System.Windows.Forms.Padding(20);
-            this.clearDeactivatedIconButton.Name = "clearDeactivatedIconButton";
-            this.clearDeactivatedIconButton.Size = new System.Drawing.Size(28, 28);
-            this.clearDeactivatedIconButton.TabIndex = 4;
-            this.clearDeactivatedIconButton.Text = "X";
-            this.clearDeactivatedIconButton.UseVisualStyleBackColor = false;
-            this.clearDeactivatedIconButton.Click += new System.EventHandler(this.ClearDeactivatedIcon);
+            this.clearIconButton.BackColor = System.Drawing.Color.IndianRed;
+            this.clearIconButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.clearIconButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.clearIconButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.clearIconButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.clearIconButton.Location = new System.Drawing.Point(351, 86);
+            this.clearIconButton.Margin = new System.Windows.Forms.Padding(20);
+            this.clearIconButton.Name = "clearIconButton";
+            this.clearIconButton.Size = new System.Drawing.Size(28, 28);
+            this.clearIconButton.TabIndex = 4;
+            this.clearIconButton.Text = "X";
+            this.clearIconButton.UseVisualStyleBackColor = false;
+            this.clearIconButton.Click += new System.EventHandler(this.ClearIcon);
+            // 
+            // chooseApp
+            // 
+            this.chooseApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.chooseApp.Location = new System.Drawing.Point(29, 137);
+            this.chooseApp.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
+            this.chooseApp.Name = "chooseApp";
+            this.chooseApp.Size = new System.Drawing.Size(128, 28);
+            this.chooseApp.TabIndex = 5;
+            this.chooseApp.Text = "Choose App";
+            this.chooseApp.UseVisualStyleBackColor = true;
+            this.chooseApp.Click += new System.EventHandler(this.ChooseAppPath);
+            // 
+            // appPath
+            // 
+            this.appPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.appPath.Location = new System.Drawing.Point(180, 137);
+            this.appPath.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
+            this.appPath.Multiline = true;
+            this.appPath.Name = "appPath";
+            this.appPath.ReadOnly = true;
+            this.appPath.Size = new System.Drawing.Size(148, 28);
+            this.appPath.TabIndex = 6;
+            // 
+            // clearAppPath
+            // 
+            this.clearAppPath.BackColor = System.Drawing.Color.IndianRed;
+            this.clearAppPath.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.clearAppPath.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.clearAppPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.clearAppPath.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.clearAppPath.Location = new System.Drawing.Point(351, 137);
+            this.clearAppPath.Margin = new System.Windows.Forms.Padding(20);
+            this.clearAppPath.Name = "clearAppPath";
+            this.clearAppPath.Size = new System.Drawing.Size(28, 28);
+            this.clearAppPath.TabIndex = 7;
+            this.clearAppPath.Text = "X";
+            this.clearAppPath.UseVisualStyleBackColor = false;
+            this.clearAppPath.Click += new System.EventHandler(this.ClearAppPath);
             // 
             // CreateAppDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(408, 291);
-            this.Controls.Add(this.clearDeactivatedIconButton);
-            this.Controls.Add(this.deactivatedPath);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(408, 272);
+            this.Controls.Add(this.clearAppPath);
+            this.Controls.Add(this.appPath);
+            this.Controls.Add(this.chooseApp);
+            this.Controls.Add(this.clearIconButton);
+            this.Controls.Add(this.iconPath);
+            this.Controls.Add(this.chooseIconButton);
+            this.Controls.Add(this.addButton);
             this.Controls.Add(this.cancelButton);
             this.Name = "CreateAppDialog";
             this.Text = "CreateAppDialog";
+            this.Click += new System.EventHandler(this.ClickForm);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.KeepForm);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DragForm);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UnkeepForm);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -132,10 +183,13 @@
         #endregion
 
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button addButton;
         private System.Windows.Forms.OpenFileDialog openIcon;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox deactivatedPath;
-        private System.Windows.Forms.Button clearDeactivatedIconButton;
+        private System.Windows.Forms.Button chooseIconButton;
+        private System.Windows.Forms.TextBox iconPath;
+        private System.Windows.Forms.Button clearIconButton;
+        private System.Windows.Forms.Button chooseApp;
+        private System.Windows.Forms.TextBox appPath;
+        private System.Windows.Forms.Button clearAppPath;
     }
 }

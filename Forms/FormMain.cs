@@ -171,7 +171,7 @@ namespace SoftLauncher
             DeactivateAllApps();
         }
 
-        //private void LoadForm(object sender, EventArgs e) => RunWithAdminRight();
+        private void LoadForm(object sender, EventArgs e) => RunWithAdminRight();
         private void RunWithAdminRight()
         {
             if (HasAdminRight())
