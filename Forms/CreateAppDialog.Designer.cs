@@ -31,9 +31,6 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.addButton = new System.Windows.Forms.Button();
             this.openIcon = new System.Windows.Forms.OpenFileDialog();
-            this.chooseIconButton = new System.Windows.Forms.Button();
-            this.iconPath = new System.Windows.Forms.TextBox();
-            this.clearIconButton = new System.Windows.Forms.Button();
             this.chooseApp = new System.Windows.Forms.Button();
             this.appPath = new System.Windows.Forms.TextBox();
             this.clearAppPath = new System.Windows.Forms.Button();
@@ -49,7 +46,7 @@
             this.cancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cancelButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cancelButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.cancelButton.Location = new System.Drawing.Point(215, 188);
+            this.cancelButton.Location = new System.Drawing.Point(215, 138);
             this.cancelButton.Margin = new System.Windows.Forms.Padding(3, 3, 20, 20);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(164, 56);
@@ -65,7 +62,7 @@
             this.addButton.Enabled = false;
             this.addButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.addButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.addButton.Location = new System.Drawing.Point(29, 188);
+            this.addButton.Location = new System.Drawing.Point(29, 137);
             this.addButton.Margin = new System.Windows.Forms.Padding(20);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(163, 56);
@@ -78,49 +75,10 @@
             // 
             this.openIcon.Filter = "Image files(*.jpg)|*.jpg|Image files(*.png)|*.png|All files(*.*)|*.*";
             // 
-            // chooseIconButton
-            // 
-            this.chooseIconButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.chooseIconButton.Location = new System.Drawing.Point(29, 85);
-            this.chooseIconButton.Margin = new System.Windows.Forms.Padding(20);
-            this.chooseIconButton.Name = "chooseIconButton";
-            this.chooseIconButton.Size = new System.Drawing.Size(128, 28);
-            this.chooseIconButton.TabIndex = 2;
-            this.chooseIconButton.Text = "Choose Icon";
-            this.chooseIconButton.UseVisualStyleBackColor = true;
-            this.chooseIconButton.Click += new System.EventHandler(this.ChooseIcon);
-            // 
-            // iconPath
-            // 
-            this.iconPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.iconPath.Location = new System.Drawing.Point(180, 86);
-            this.iconPath.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
-            this.iconPath.Multiline = true;
-            this.iconPath.Name = "iconPath";
-            this.iconPath.ReadOnly = true;
-            this.iconPath.Size = new System.Drawing.Size(148, 28);
-            this.iconPath.TabIndex = 3;
-            // 
-            // clearIconButton
-            // 
-            this.clearIconButton.BackColor = System.Drawing.Color.IndianRed;
-            this.clearIconButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.clearIconButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.clearIconButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.clearIconButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.clearIconButton.Location = new System.Drawing.Point(351, 86);
-            this.clearIconButton.Margin = new System.Windows.Forms.Padding(20);
-            this.clearIconButton.Name = "clearIconButton";
-            this.clearIconButton.Size = new System.Drawing.Size(28, 28);
-            this.clearIconButton.TabIndex = 4;
-            this.clearIconButton.Text = "X";
-            this.clearIconButton.UseVisualStyleBackColor = false;
-            this.clearIconButton.Click += new System.EventHandler(this.ClearIcon);
-            // 
             // chooseApp
             // 
             this.chooseApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.chooseApp.Location = new System.Drawing.Point(29, 137);
+            this.chooseApp.Location = new System.Drawing.Point(29, 86);
             this.chooseApp.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
             this.chooseApp.Name = "chooseApp";
             this.chooseApp.Size = new System.Drawing.Size(128, 28);
@@ -132,7 +90,7 @@
             // appPath
             // 
             this.appPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.appPath.Location = new System.Drawing.Point(180, 137);
+            this.appPath.Location = new System.Drawing.Point(180, 87);
             this.appPath.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
             this.appPath.Multiline = true;
             this.appPath.Name = "appPath";
@@ -147,7 +105,7 @@
             this.clearAppPath.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.clearAppPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearAppPath.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.clearAppPath.Location = new System.Drawing.Point(351, 137);
+            this.clearAppPath.Location = new System.Drawing.Point(351, 87);
             this.clearAppPath.Margin = new System.Windows.Forms.Padding(20);
             this.clearAppPath.Name = "clearAppPath";
             this.clearAppPath.Size = new System.Drawing.Size(28, 28);
@@ -165,13 +123,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(408, 272);
+            this.ClientSize = new System.Drawing.Size(408, 219);
             this.Controls.Add(this.clearAppPath);
             this.Controls.Add(this.appPath);
             this.Controls.Add(this.chooseApp);
-            this.Controls.Add(this.clearIconButton);
-            this.Controls.Add(this.iconPath);
-            this.Controls.Add(this.chooseIconButton);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.cancelButton);
             this.Name = "CreateAppDialog";
@@ -190,9 +145,6 @@
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button addButton;
         private System.Windows.Forms.OpenFileDialog openIcon;
-        private System.Windows.Forms.Button chooseIconButton;
-        private System.Windows.Forms.TextBox iconPath;
-        private System.Windows.Forms.Button clearIconButton;
         private System.Windows.Forms.Button chooseApp;
         private System.Windows.Forms.TextBox appPath;
         private System.Windows.Forms.Button clearAppPath;

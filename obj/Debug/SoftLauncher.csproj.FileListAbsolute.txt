@@ -1,5 +1,4 @@
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Debug\SoftLauncher.csprojAssemblyReference.cache
-E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Debug\SoftLauncher.Form1.resources
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Debug\SoftLauncher.Properties.Resources.resources
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Debug\SoftLauncher.csproj.GenerateResource.cache
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\bin\Debug\SoftLauncher.exe.config
@@ -7,3 +6,5 @@ E:\Planfact\Projects\SoftLauncher\SoftLauncher\bin\Debug\SoftLauncher.exe
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\bin\Debug\SoftLauncher.pdb
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Debug\SoftLauncher.exe
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Debug\SoftLauncher.pdb
+E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Debug\SoftLauncher.FormMain.resources
+E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Debug\SoftLauncher.Forms.CreateAppDialog.resources

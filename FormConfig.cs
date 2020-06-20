@@ -8,10 +8,10 @@ namespace SoftLauncher
         public int ControlButtonSize { get; }
         public int ControlFontSize { get; }
         public int RowCapacity { get; }
-        public FormConfig(int margin = 50, int appIconSize = 75, int controlButtonSize = 30, int rowCapacity = 4)
+        public FormConfig(int margin = 50, int iconSize = 75, int controlButtonSize = 30, int rowCapacity = 4)
         {
             Margin = margin;
-            IconSize = appIconSize;
+            IconSize = iconSize;
             ControlButtonSize = controlButtonSize;
             ControlFontSize = ControlButtonSize / 2 - 2;
             RowCapacity = rowCapacity;

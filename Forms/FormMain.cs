@@ -16,28 +16,23 @@ namespace SoftLauncher
         {
             new AppEntity(
                 appName: "Skype",
-                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\skypeIcon.png",
                 executePath: @"C:\Program Files (x86)\Microsoft\Skype for Desktop\Skype.exe"),
             new AppEntity(
                 appName: "Discord",
-                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\discordIcon.png",
                 executePath: @"C:\Users\Eugene\AppData\Local\Discord\app-0.0.305\Discord.exe"),
             new AppEntity(
                 appName: "Visual Studio",
-                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\vsIcon.png",
                 executePath: @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"),
             new AppEntity(
                 appName: "Visual Studio Code",
-                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\vsCodeIcon.png",
                 executePath: @"C:\Users\Eugene\AppData\Local\Programs\Microsoft VS Code\Code.exe"),
             new AppEntity(
                 appName: "Telegram",
-                iconPath: @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\telegramIcon.png",
                 executePath: @"E:\Telegram Desktop\Telegram.exe")
         };
         private readonly FormConfig _formConfig = new FormConfig(
             margin: 25,
-            appIconSize: 75,
+            iconSize: 50,
             controlButtonSize: 25,
             rowCapacity: 3);
         private readonly ControlButton _quitButton = new ControlButton(index: 0);
@@ -53,10 +48,10 @@ namespace SoftLauncher
             InitializeComponent();
             DeleteFormBorders();
 
-            InitializeAppImages();
-            InitializeFormSize();
-            InitializeLaunchButton();
-            InitializeControlButtons();
+            InitAppImages();
+            InitFormSize();
+            InitLaunchButton();
+            InitControlButtons();
 
             BoundClickHandlers();
             ActivateAllApps();
@@ -70,7 +65,7 @@ namespace SoftLauncher
             Text = "";
         }
 
-        private void InitializeAppImages()
+        private void InitAppImages()
         {
             for (int i = 0; i < _apps.Count; ++i)
             {
@@ -78,23 +73,27 @@ namespace SoftLauncher
                 _apps[i].PictureBox.Location = new Point(
                     _formConfig.Margin + i % _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin),
                     _formConfig.Margin * 2 + _formConfig.ControlButtonSize + i / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin));
-                _apps[i].PictureBox.Width = _formConfig.IconSize;
-                _apps[i].PictureBox.Height = _formConfig.IconSize;
-                _apps[i].PictureBox.SizeMode = PictureBoxSizeMode.Normal;
-                _apps[i].PictureBox.ImageLocation = _apps[i].IconPath;
-
+                _apps[i].PictureBox.Image = Icon.ExtractAssociatedIcon(_apps[i].ExecutePath).ToBitmap();
+                _apps[i].SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
+                _apps[i].PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                 Controls.Add(_apps[i].PictureBox);
             }
         }
 
-        private void InitializeFormSize()
+        private void InitFormSize()
         {
             Width = _formConfig.Margin + (_formConfig.Margin + _formConfig.IconSize) * _formConfig.RowCapacity;
-            Height = (_formConfig.Margin * _apps.Count) + _formConfig.ControlButtonSize +
-                ((_apps.Count - 1) / _formConfig.RowCapacity + 1) * _formConfig.IconSize + _formConfig.IconSize;
+            Height = _formConfig.Margin * 2 + _formConfig.ControlButtonSize + ((_formConfig.IconSize + _formConfig.Margin) * ((_apps.Count - 1) / _formConfig.RowCapacity + 1)) +
+                _formConfig.IconSize + _formConfig.Margin;
         }
 
-        private void InitializeLaunchButton()
+        private void InitLaunchButton()
+        {
+            InitLaunchButtonProps();
+            _launchButton.Click += LaunchApps;
+            Controls.Add(_launchButton);
+        }
+        private void InitLaunchButtonProps()
         {
             _launchButton.Size = new Size(Width - 2 * _formConfig.Margin, _formConfig.IconSize);
             _launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize);
@@ -102,8 +101,6 @@ namespace SoftLauncher
             _launchButton.ForeColor = Color.Black;
             _launchButton.FlatStyle = FlatStyle.Flat;
             _launchButton.Font = new Font("San Serif", 16, FontStyle.Regular);
-            _launchButton.Click += LaunchApps;
-            Controls.Add(_launchButton);
             UpdateLaunchButtonText();
         }
         private void UpdateLaunchButtonStatus(object sender, EventArgs e)
@@ -123,7 +120,7 @@ namespace SoftLauncher
                 ? "Launch (" + CountActivatedAppIcons() + ")"
                 : "Launch";
 
-        private void InitializeControlButtons()
+        private void InitControlButtons()
         {
             _quitButton.Init("X", Color.IndianRed, _formConfig, this, ExitApp);
             _hideButton.Init("-", Color.LightGray, _formConfig, this, HideApp);
@@ -225,8 +222,8 @@ namespace SoftLauncher
                 _apps.Add(newApp as AppEntity);
                 Controls.Add((newApp as AppEntity).PictureBox);
                 InitIconConfig(newApp as AppEntity);
-                (newApp as AppEntity).PictureBox.Click += SwitchApp;
-                (newApp as AppEntity).PictureBox.Click += UpdateLaunchButtonStatus;
+                InitFormSize();
+                InitLaunchButtonProps();
             }
         }
         private void InitIconConfig(AppEntity app)
@@ -237,7 +234,9 @@ namespace SoftLauncher
                     _formConfig.Margin * 2 + _formConfig.ControlButtonSize + index / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin));
             _apps[index].PictureBox.Width = _formConfig.IconSize;
             _apps[index].PictureBox.Height = _formConfig.IconSize;
-            _apps[index].PictureBox.SizeMode = PictureBoxSizeMode.Normal;
+            _apps[index].SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
+            _apps[index].PictureBox.Click += SwitchApp;
+            _apps[index].PictureBox.Click += UpdateLaunchButtonStatus;
         }
     }
 }

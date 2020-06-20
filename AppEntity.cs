@@ -8,24 +8,39 @@ namespace SoftLauncher
     public class AppEntity : ICloneable
     {
         public string AppName { get; set; }
-        public string IconPath { get; set; }
         public string ExecutePath { get; set; }
         public TransparentPictureBox PictureBox { get; set; }
         public bool IsActivated { get; private set; }
         public AppEntity() { }
-        public AppEntity(string appName, string iconPath, string executePath)
+        public AppEntity(string appName, string executePath)
         {
             AppName = appName;
-            IconPath = iconPath;
             ExecutePath = executePath;
             PictureBox = new TransparentPictureBox()
             {
                 Name = AppName,
-                ImageLocation = IconPath,
-                Image = Image.FromFile(IconPath)
+                Image = Icon.ExtractAssociatedIcon(executePath).ToBitmap(),
             };
+            PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            SetSize(PictureBox.Image.Size);
+        }
+        public AppEntity(string appName, string executePath, Size size)
+        {
+            AppName = appName;
+            ExecutePath = executePath;
+            PictureBox = new TransparentPictureBox()
+            {
+                Name = AppName,
+                Image = Icon.ExtractAssociatedIcon(executePath).ToBitmap(),
+            };
+            PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            SetSize(size);
         }
 
+        public void SetSize(Size size)
+        {
+            PictureBox.Size = size;
+        }
         public void Activate()
         {
             PictureBox.BackColor = Color.PaleGreen;
@@ -41,8 +56,7 @@ namespace SoftLauncher
 
         public object Clone()
         {
-            var newApp = new AppEntity(AppName, IconPath, ExecutePath);
-            newApp.PictureBox = PictureBox;
+            var newApp = new AppEntity(AppName, ExecutePath);
             return newApp;
         }
     }

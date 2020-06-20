@@ -14,7 +14,7 @@ namespace SoftLauncher
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new CreateAppDialog());
+            Application.Run(new FormMain());
         }
     }
 }
