@@ -71,6 +71,7 @@
     <Compile Include="TransparentPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="WrongFileFormatException.cs" />
     <EmbeddedResource Include="Forms\CreateAppDialog.resx">
       <DependentUpon>CreateAppDialog.cs</DependentUpon>
     </EmbeddedResource>

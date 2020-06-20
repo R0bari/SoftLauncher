@@ -25,10 +25,10 @@ namespace SoftLauncher.Forms
             InitializeComponent();
             DeleteFormBorders();
 
-            InitializeAppNameTextBox();
+            InitAppNameTextBox();
             BoundAddButtonChanger();
         }
-        private void InitializeAppNameTextBox()
+        private void InitAppNameTextBox()
         {
             _appName.Location = new Point(chooseApp.Location.X, 20);
             _appName.Size = new Size(clearAppPath.Location.X + clearAppPath.Width - chooseApp.Location.X, appPath.Height);

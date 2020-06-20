@@ -46,7 +46,7 @@
             this.cancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cancelButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cancelButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.cancelButton.Location = new System.Drawing.Point(215, 138);
+            this.cancelButton.Location = new System.Drawing.Point(215, 123);
             this.cancelButton.Margin = new System.Windows.Forms.Padding(3, 3, 20, 20);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(164, 56);
@@ -62,7 +62,7 @@
             this.addButton.Enabled = false;
             this.addButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.addButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.addButton.Location = new System.Drawing.Point(29, 137);
+            this.addButton.Location = new System.Drawing.Point(29, 122);
             this.addButton.Margin = new System.Windows.Forms.Padding(20);
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(163, 56);
@@ -78,7 +78,7 @@
             // chooseApp
             // 
             this.chooseApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.chooseApp.Location = new System.Drawing.Point(29, 86);
+            this.chooseApp.Location = new System.Drawing.Point(29, 71);
             this.chooseApp.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
             this.chooseApp.Name = "chooseApp";
             this.chooseApp.Size = new System.Drawing.Size(128, 28);
@@ -90,7 +90,7 @@
             // appPath
             // 
             this.appPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.appPath.Location = new System.Drawing.Point(180, 87);
+            this.appPath.Location = new System.Drawing.Point(180, 72);
             this.appPath.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
             this.appPath.Multiline = true;
             this.appPath.Name = "appPath";
@@ -105,7 +105,7 @@
             this.clearAppPath.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.clearAppPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearAppPath.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.clearAppPath.Location = new System.Drawing.Point(351, 87);
+            this.clearAppPath.Location = new System.Drawing.Point(351, 72);
             this.clearAppPath.Margin = new System.Windows.Forms.Padding(20);
             this.clearAppPath.Name = "clearAppPath";
             this.clearAppPath.Size = new System.Drawing.Size(28, 28);
@@ -123,7 +123,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(408, 219);
+            this.ClientSize = new System.Drawing.Size(408, 208);
             this.Controls.Add(this.clearAppPath);
             this.Controls.Add(this.appPath);
             this.Controls.Add(this.chooseApp);
