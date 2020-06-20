@@ -11,7 +11,7 @@ namespace SoftLauncher
         {
             Index = index;
         }
-        public void Init(string text, Color backColor, FormConfig config, Form form, EventHandler action = null)
+        public void Init(string text, Color backColor, Config config, Form form, EventHandler action = null)
         {
             Text = text;
             Size = new Size(config.ControlButtonSize, config.ControlButtonSize);

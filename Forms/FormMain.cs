@@ -30,7 +30,7 @@ namespace SoftLauncher
                 appName: "Telegram",
                 executePath: @"E:\Telegram Desktop\Telegram.exe")
         };
-        private readonly FormConfig _formConfig = new FormConfig(
+        private readonly Config _formConfig = new Config(
             margin: 25,
             iconSize: 50,
             controlButtonSize: 25,

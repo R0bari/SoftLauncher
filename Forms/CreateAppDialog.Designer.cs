@@ -130,6 +130,7 @@
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.cancelButton);
             this.Name = "CreateAppDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "CreateAppDialog";
             this.Click += new System.EventHandler(this.ClickForm);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.KeepForm);
