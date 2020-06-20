@@ -23,23 +23,23 @@ namespace SoftLauncher.Forms
         public CreateAppDialog()
         {
             InitializeComponent();
-            DeleteFormBorders();
+            DeleteFormBorders(this);
 
-            InitAppNameTextBox();
-            BoundAddButtonChanger();
+            InitAppNameTextBox(_appName);
+            BoundAddButtonChanger(ChangeAddButtonStatus);
         }
-        private void InitAppNameTextBox()
+        private void InitAppNameTextBox(TextBoxWithPlaceholder appName)
         {
-            _appName.Location = new Point(chooseApp.Location.X, 20);
-            _appName.Size = new Size(clearAppPath.Location.X + clearAppPath.Width - chooseApp.Location.X, appPath.Height);
-            _appName.Placeholder = "Enter app name";
-            _appName.Font = new Font("San Serif", 12, FontStyle.Regular);
+            appName.Location = new Point(chooseApp.Location.X, 20);
+            appName.Size = new Size(clearAppPath.Location.X + clearAppPath.Width - chooseApp.Location.X, appPath.Height);
+            appName.Placeholder = "Enter app name";
+            appName.Font = new Font("San Serif", 12, FontStyle.Regular);
             Controls.Add(_appName);
         }
-        private void BoundAddButtonChanger()
+        private void BoundAddButtonChanger(EventHandler changeAddButtonStatus)
         {
-            _appName.TextChanged += ChangeAddButtonStatus;
-            appPath.TextChanged += ChangeAddButtonStatus;
+            _appName.TextChanged += changeAddButtonStatus;
+            appPath.TextChanged += changeAddButtonStatus;
         }
         private void ChangeAddButtonStatus(object sender, EventArgs e)
         {
@@ -48,11 +48,11 @@ namespace SoftLauncher.Forms
                 : false;
         }
 
-        private void DeleteFormBorders()
+        private void DeleteFormBorders(Form form)
         {
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            ControlBox = false;
-            Text = "";
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.ControlBox = false;
+            form.Text = "";
         }
 
         private void ChooseAppPath(object sender, EventArgs e)
@@ -86,8 +86,10 @@ namespace SoftLauncher.Forms
             icon = Icon.ExtractAssociatedIcon(openAppPath.FileName);
             appEntity.AppName = _appName.Text;
             appEntity.ExecutePath = appPath.Text;
-            appEntity.PictureBox = new TransparentPictureBox();
-            appEntity.PictureBox.Image = icon.ToBitmap();
+            appEntity.PictureBox = new TransparentPictureBox
+            {
+                Image = icon.ToBitmap()
+            };
         }
 
         private void KeepForm(object sender, MouseEventArgs e)
