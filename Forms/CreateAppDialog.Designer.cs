@@ -67,7 +67,7 @@
             this.addButton.Name = "addButton";
             this.addButton.Size = new System.Drawing.Size(163, 56);
             this.addButton.TabIndex = 1;
-            this.addButton.Text = "Add";
+            this.addButton.Text = "Accept";
             this.addButton.UseVisualStyleBackColor = false;
             this.addButton.Click += new System.EventHandler(this.AddApp);
             // 
@@ -81,7 +81,7 @@
             this.chooseApp.Location = new System.Drawing.Point(29, 71);
             this.chooseApp.Margin = new System.Windows.Forms.Padding(20, 20, 3, 3);
             this.chooseApp.Name = "chooseApp";
-            this.chooseApp.Size = new System.Drawing.Size(128, 28);
+            this.chooseApp.Size = new System.Drawing.Size(128, 29);
             this.chooseApp.TabIndex = 5;
             this.chooseApp.Text = "Choose App";
             this.chooseApp.UseVisualStyleBackColor = true;
@@ -131,7 +131,7 @@
             this.Controls.Add(this.cancelButton);
             this.Name = "CreateAppDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "CreateAppDialog";
+            this.Text = "Create App";
             this.Click += new System.EventHandler(this.ClickForm);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.KeepForm);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DragForm);

@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SoftLauncher.Forms
@@ -20,13 +14,18 @@ namespace SoftLauncher.Forms
         private bool _dragFormStatus;
         private int _deltaX, _deltaY;
 
-        public CreateAppDialog()
+        public CreateAppDialog(AppEntity appEntity = null)
         {
             InitializeComponent();
             DeleteFormBorders(this);
 
             InitAppNameTextBox(_appName);
             BoundAddButtonChanger(ChangeAddButtonStatus);
+
+            if (appEntity != null) {
+                _appName.Text = appEntity.AppName;
+                appPath.Text = appEntity.ExecutePath;
+            };
         }
         private void InitAppNameTextBox(TextBoxWithPlaceholder appName)
         {
@@ -83,7 +82,7 @@ namespace SoftLauncher.Forms
         }
         private void AddApp(object sender, EventArgs e)
         {
-            icon = Icon.ExtractAssociatedIcon(openAppPath.FileName);
+            icon = Icon.ExtractAssociatedIcon(appPath.Text);
             appEntity.AppName = _appName.Text;
             appEntity.ExecutePath = appPath.Text;
             appEntity.PictureBox = new TransparentPictureBox

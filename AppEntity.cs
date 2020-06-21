@@ -36,7 +36,11 @@ namespace SoftLauncher
             SetSize(size);
         }
 
-        public void SetSize(Size size) => PictureBox.Size = size;
+        public void SetSize(Size size)
+        {
+            PictureBox.Size = size;
+            PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
 
         public void Activate()
         {

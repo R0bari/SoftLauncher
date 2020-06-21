@@ -28,7 +28,38 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.appContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.editApp = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteApp = new System.Windows.Forms.ToolStripMenuItem();
+            this.appContextMenu.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // appContextMenu
+            // 
+            this.appContextMenu.BackColor = System.Drawing.Color.AliceBlue;
+            this.appContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editApp,
+            this.deleteApp});
+            this.appContextMenu.Name = "appContextMenu";
+            this.appContextMenu.Size = new System.Drawing.Size(181, 70);
+            // 
+            // editApp
+            // 
+            this.editApp.BackColor = System.Drawing.SystemColors.Control;
+            this.editApp.Name = "editApp";
+            this.editApp.Size = new System.Drawing.Size(180, 22);
+            this.editApp.Text = "Edit";
+            this.editApp.Click += new System.EventHandler(this.EditApp);
+            // 
+            // deleteApp
+            // 
+            this.deleteApp.BackColor = System.Drawing.Color.IndianRed;
+            this.deleteApp.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.deleteApp.Name = "deleteApp";
+            this.deleteApp.Size = new System.Drawing.Size(180, 22);
+            this.deleteApp.Text = "Delete";
+            this.deleteApp.Click += new System.EventHandler(this.DeleteApp);
             // 
             // FormMain
             // 
@@ -40,15 +71,19 @@
             this.Name = "FormMain";
             this.Opacity = 0.98D;
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.LoadForm);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.KeepForm);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DragForm);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UnkeepForm);
+            this.appContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.ContextMenuStrip appContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem editApp;
+        private System.Windows.Forms.ToolStripMenuItem deleteApp;
     }
 }
 
