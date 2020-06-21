@@ -286,6 +286,17 @@ namespace SoftLauncher
             UpdateLaunchButtonLocation(_launchButton);
             UpdateLaunchButtonText(_launchButton);
         }
+        private void LaunchApp(object sender, EventArgs e)
+        {
+            var app = _apps.Find(a => a == _currentApp);
+            if (app == null) return;
+
+            if (app.IsActivated)
+            {
+                Process.Start(app.ExecutePath);
+            }
+        }
+
         private void InitIconConfig(AppEntity app)
         {
             var index = _apps.FindIndex(a => a == app);

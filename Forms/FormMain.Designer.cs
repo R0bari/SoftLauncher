@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.appContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.launchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editApp = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteApp = new System.Windows.Forms.ToolStripMenuItem();
             this.appContextMenu.SuspendLayout();
@@ -39,16 +40,25 @@
             // 
             this.appContextMenu.BackColor = System.Drawing.Color.AliceBlue;
             this.appContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.launchToolStripMenuItem,
             this.editApp,
             this.deleteApp});
             this.appContextMenu.Name = "appContextMenu";
-            this.appContextMenu.Size = new System.Drawing.Size(181, 70);
+            this.appContextMenu.Size = new System.Drawing.Size(114, 70);
+            // 
+            // launchToolStripMenuItem
+            // 
+            this.launchToolStripMenuItem.BackColor = System.Drawing.Color.PaleGreen;
+            this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.launchToolStripMenuItem.Text = "Launch";
+            this.launchToolStripMenuItem.Click += new System.EventHandler(this.LaunchApp);
             // 
             // editApp
             // 
-            this.editApp.BackColor = System.Drawing.SystemColors.Control;
+            this.editApp.BackColor = System.Drawing.Color.Azure;
             this.editApp.Name = "editApp";
-            this.editApp.Size = new System.Drawing.Size(180, 22);
+            this.editApp.Size = new System.Drawing.Size(113, 22);
             this.editApp.Text = "Edit";
             this.editApp.Click += new System.EventHandler(this.EditApp);
             // 
@@ -57,7 +67,7 @@
             this.deleteApp.BackColor = System.Drawing.Color.IndianRed;
             this.deleteApp.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.deleteApp.Name = "deleteApp";
-            this.deleteApp.Size = new System.Drawing.Size(180, 22);
+            this.deleteApp.Size = new System.Drawing.Size(113, 22);
             this.deleteApp.Text = "Delete";
             this.deleteApp.Click += new System.EventHandler(this.DeleteApp);
             // 
@@ -71,6 +81,7 @@
             this.Name = "FormMain";
             this.Opacity = 0.98D;
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.LoadFormMain);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.KeepForm);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DragForm);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UnkeepForm);
@@ -84,6 +95,7 @@
         private System.Windows.Forms.ContextMenuStrip appContextMenu;
         private System.Windows.Forms.ToolStripMenuItem editApp;
         private System.Windows.Forms.ToolStripMenuItem deleteApp;
+        private System.Windows.Forms.ToolStripMenuItem launchToolStripMenuItem;
     }
 }
 
