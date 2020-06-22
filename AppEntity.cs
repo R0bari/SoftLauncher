@@ -9,7 +9,7 @@ namespace SoftLauncher
         public string AppName { get; set; }
         public string ExecutePath { get; set; }
         public TransparentPictureBox PictureBox { get; set; }
-        public bool IsActivated { get; private set; }
+        public bool IsSelected { get; private set; }
         public AppEntity() { }
         public AppEntity(string appName, string executePath)
         {
@@ -42,17 +42,17 @@ namespace SoftLauncher
             PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
-        public void Activate()
+        public void Select()
         {
             PictureBox.BackColor = Color.PaleGreen;
             PictureBox.BorderStyle = BorderStyle.FixedSingle;
-            IsActivated = true;
+            IsSelected = true;
         }
-        public void Deactivate()
+        public void Unselect()
         {
             PictureBox.BackColor = Color.Transparent;
             PictureBox.BorderStyle = BorderStyle.None;
-            IsActivated = false;
+            IsSelected = false;
         }
 
         public object Clone() => new AppEntity(AppName, ExecutePath);
