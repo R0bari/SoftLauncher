@@ -45,14 +45,14 @@
             this.editApp,
             this.deleteApp});
             this.appContextMenu.Name = "appContextMenu";
-            this.appContextMenu.Size = new System.Drawing.Size(121, 70);
+            this.appContextMenu.Size = new System.Drawing.Size(181, 92);
             // 
             // launchToolStripMenuItem
             // 
             this.launchToolStripMenuItem.BackColor = System.Drawing.Color.PaleGreen;
             this.launchToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("launchToolStripMenuItem.Image")));
             this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
-            this.launchToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.launchToolStripMenuItem.Text = "Launch";
             // 
             // editApp
@@ -60,7 +60,7 @@
             this.editApp.BackColor = System.Drawing.Color.Azure;
             this.editApp.Image = ((System.Drawing.Image)(resources.GetObject("editApp.Image")));
             this.editApp.Name = "editApp";
-            this.editApp.Size = new System.Drawing.Size(120, 22);
+            this.editApp.Size = new System.Drawing.Size(180, 22);
             this.editApp.Text = "Info/Edit";
             this.editApp.Click += new System.EventHandler(this.EditApp);
             // 
@@ -71,7 +71,7 @@
             this.deleteApp.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.deleteApp.Image = ((System.Drawing.Image)(resources.GetObject("deleteApp.Image")));
             this.deleteApp.Name = "deleteApp";
-            this.deleteApp.Size = new System.Drawing.Size(120, 22);
+            this.deleteApp.Size = new System.Drawing.Size(180, 22);
             this.deleteApp.Text = "Delete";
             this.deleteApp.Click += new System.EventHandler(this.DeleteApp);
             // 

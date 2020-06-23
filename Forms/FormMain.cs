@@ -173,29 +173,14 @@ namespace SoftLauncher
             }
             UpdateLaunchButtonText(launchButton);
         }
-        private void UpdateSwitchButtonStatus(Button switchAllButton)
-        {
-            ToolTip t = new ToolTip();
-            if (apps.Any(app => !app.IsSelected))
-            {
-                switchAllButton.BackColor = Color.PaleGreen;
-                //switchAllButton.Text = "Select";
-                t.SetToolTip(switchAllButton, "Select all");
-            }
-            else
-            {
-                switchAllButton.BackColor = Color.IndianRed;
-                //switchAllButton.Text = "Unselect";
-                t.SetToolTip(switchAllButton, "Unselect all");
-            }
-        }
+        private void UpdateSwitchButtonStatus(Button switchAllButton) => switchAllButton.BackColor = (apps.Any(app => !app.IsSelected)) ? Color.PaleGreen : Color.IndianRed;
 
         private void InitControlButtons(ControlButton quitButton, ControlButton hideButton, ControlButton addButton, ControlButton switchButton)
         {
             quitButton.Init("X", Color.IndianRed, _formConfig, this, ExitApp);
             hideButton.Init("-", Color.LightGray, _formConfig, this, HideApp);
             addButton.Init("+", Color.PaleGreen, _formConfig, this, AddApp);
-            switchButton.Init("", Color.PaleGreen, _formConfig, this, SwitchAll, @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\check.png");
+            switchButton.Init("", Color.PaleGreen, _formConfig, this, SwitchAll, @"img\check.png");
         }
 
         private int CountActivatedAppIcons(List<AppEntity> apps) => apps.Where(app => app.IsSelected).Count();
