@@ -23,28 +23,23 @@ namespace SoftLauncher
             PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             SetSize(PictureBox.Image.Size);
         }
-        public AppEntity(string appName, string executePath, Size size)
-        {
-            AppName = appName;
-            ExecutePath = executePath;
-            PictureBox = new TransparentPictureBox()
-            {
-                Name = AppName,
-                Image = Icon.ExtractAssociatedIcon(executePath).ToBitmap(),
-            };
-            PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            SetSize(size);
-        }
         public AppEntity(AppEntityJson appJson)
         {
             AppName = appJson.AppName;
             ExecutePath = appJson.ExecutePath;
-            IsSelected = appJson.IsSelected;
             PictureBox = new TransparentPictureBox()
             {
                 Name = AppName,
                 Image = Icon.ExtractAssociatedIcon(ExecutePath).ToBitmap(),
             };
+            if (appJson.IsSelected)
+            {
+                Select();
+            }
+            else
+            {
+                Unselect();
+            }
             PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             SetSize(PictureBox.Image.Size);
         }
@@ -55,6 +50,16 @@ namespace SoftLauncher
             PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
+        public void Switch()
+        {
+            if (IsSelected)
+            {
+                Unselect();
+            } else
+            {
+                Select();
+            }
+        }
         public void Select()
         {
             PictureBox.BackColor = Color.PaleGreen;

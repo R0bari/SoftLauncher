@@ -19,15 +19,16 @@ namespace SoftLauncher
         private readonly Config _formConfig = new Config(
             filePath: "apps.json",
             margin: 20,
-            iconSize: 50,
-            controlButtonSize: 25,
+            iconSize: 64,
+            controlButtonSize: 32,
             rowCapacity: 3);
-        private readonly List<AppEntity> _apps = new List<AppEntity>();
+        private readonly List<AppEntity> apps = new List<AppEntity>();
         private AppEntity _currentApp = new AppEntity();
-        private readonly ControlButton _quitButton = new ControlButton(index: 0);
-        private readonly ControlButton _hideButton = new ControlButton(index: 1);
-        private readonly ControlButton _addButton = new ControlButton(index: 2);
-        private readonly Button _launchButton = new Button();
+        private readonly ControlButton quitButton = new ControlButton(index: 0);
+        private readonly ControlButton hideButton = new ControlButton(index: 1);
+        private readonly ControlButton addButton = new ControlButton(index: 2);
+        private readonly ControlButton switchButton = new ControlButton(index: 3);
+        private readonly Button launchButton = new Button();
 
         private bool _dragFormStatus;
         private int _deltaX, _deltaY;
@@ -37,25 +38,26 @@ namespace SoftLauncher
             InitializeComponent();
             DeleteFormBorders(this);
 
-            _apps = ReadFromFile(_formConfig.FilePath);
+            apps = ReadFromFile(_formConfig.FilePath);
             InitAppImages(
-                apps: _apps,
+                apps: apps,
                 switchApp: ClickAppIcon,
                 updateLaunchButtonStatus: UpdateLaunchButtonStatus);
             UpdateFormSize(this);
-            InitLaunchButton(_launchButton, LaunchSelectedApps);
             InitControlButtons(
-                quitButton: _quitButton,
-                addButton: _addButton,
-                hideButton: _hideButton);
+                quitButton: quitButton,
+                addButton: addButton,
+                hideButton: hideButton,
+                switchButton: switchButton);
+            InitLaunchButton(launchButton, LaunchSelectedApps);
 
-            ActivateAllApps(_apps);
-            UpdateLaunchButtonText(_launchButton);
+            UpdateSwitchButtonStatus(switchButton);
+            UpdateLaunchButtonText(launchButton);
         }
 
         private List<AppEntity> ReadFromFile(string filePath)
         {
-            
+
             using (StreamReader stream = new StreamReader(filePath))
             {
                 var jsonString = stream.ReadToEnd();
@@ -68,13 +70,10 @@ namespace SoftLauncher
                 {
                     MessageBox.Show($"Can't read apps list from file \"{Environment.CurrentDirectory}\\{filePath}\"", "Read error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                
-                var apps = new List<AppEntity>();
 
-                if (jsonApps is List<AppEntityJson>)
-                {
-                    (jsonApps as List<AppEntityJson>).ForEach(jsonApp => apps.Add(new AppEntity(jsonApp)));
-                }
+                var apps = new List<AppEntity>();
+                (jsonApps as List<AppEntityJson>).ForEach(jsonApp => apps.Add(new AppEntity(jsonApp)));
+
                 return apps;
             }
         }
@@ -86,7 +85,7 @@ namespace SoftLauncher
             }
 
             var jsonApps = new List<AppEntityJson>();
-            _apps.ForEach(app => jsonApps.Add(new AppEntityJson(app)));
+            apps.ForEach(app => jsonApps.Add(new AppEntityJson(app)));
 
             using (StreamWriter stream = new StreamWriter(filePath))
             {
@@ -110,7 +109,7 @@ namespace SoftLauncher
 
         private void InitAppImages(List<AppEntity> apps, MouseEventHandler switchApp, MouseEventHandler updateLaunchButtonStatus)
         {
-            foreach (var app in _apps)
+            foreach (var app in this.apps)
             {
                 app.PictureBox.Name = app.AppName;
                 app.PictureBox.Image = Icon.ExtractAssociatedIcon(app.ExecutePath).ToBitmap();
@@ -135,7 +134,7 @@ namespace SoftLauncher
         private void UpdateFormSize(FormMain form)
         {
             form.Width = _formConfig.Margin + (_formConfig.Margin + _formConfig.IconSize) * _formConfig.RowCapacity;
-            form.Height = _formConfig.Margin * 2 + _formConfig.ControlButtonSize + ((_formConfig.IconSize + _formConfig.Margin) * ((_apps.Count - 1) / _formConfig.RowCapacity + 1)) +
+            form.Height = _formConfig.Margin * 2 + _formConfig.ControlButtonSize + ((_formConfig.IconSize + _formConfig.Margin) * ((apps.Count - 1) / _formConfig.RowCapacity + 1)) +
                 _formConfig.IconSize + _formConfig.Margin;
         }
         private void InitLaunchButton(Button launchButton, EventHandler launchSelectedApps)
@@ -159,35 +158,71 @@ namespace SoftLauncher
             launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize);
         }
         private void UpdateLaunchButtonText(Button launchButton) => launchButton.Text = launchButton.Enabled
-                ? "Launch (" + CountActivatedAppIcons(_apps) + ")"
+                ? "Launch (" + CountActivatedAppIcons(apps) + ")"
                 : "Launch";
-        private void UpdateLaunchButtonStatus(object sender, MouseEventArgs e)
+        private void UpdateLaunchButtonStatus(object sender, EventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            launchButton.Enabled = false;
+            foreach (var app in apps)
             {
-                _launchButton.Enabled = false;
-                foreach (var app in _apps)
+                if (app.IsSelected)
                 {
-                    if (app.IsSelected)
-                    {
-                        _launchButton.Enabled = true;
-                        break;
-                    }
+                    launchButton.Enabled = true;
+                    break;
                 }
-                UpdateLaunchButtonText(_launchButton);
+            }
+            UpdateLaunchButtonText(launchButton);
+        }
+        private void UpdateSwitchButtonStatus(Button switchAllButton)
+        {
+            ToolTip t = new ToolTip();
+            if (apps.Any(app => !app.IsSelected))
+            {
+                switchAllButton.BackColor = Color.PaleGreen;
+                //switchAllButton.Text = "Select";
+                t.SetToolTip(switchAllButton, "Select all");
+            }
+            else
+            {
+                switchAllButton.BackColor = Color.IndianRed;
+                //switchAllButton.Text = "Unselect";
+                t.SetToolTip(switchAllButton, "Unselect all");
             }
         }
 
-        private void InitControlButtons(ControlButton quitButton, ControlButton hideButton, ControlButton addButton)
+        private void InitControlButtons(ControlButton quitButton, ControlButton hideButton, ControlButton addButton, ControlButton switchButton)
         {
             quitButton.Init("X", Color.IndianRed, _formConfig, this, ExitApp);
             hideButton.Init("-", Color.LightGray, _formConfig, this, HideApp);
             addButton.Init("+", Color.PaleGreen, _formConfig, this, AddApp);
+            switchButton.Init("", Color.PaleGreen, _formConfig, this, SwitchAll, @"E:\Planfact\Projects\SoftLauncher\SoftLauncher\img\check.png");
         }
 
         private int CountActivatedAppIcons(List<AppEntity> apps) => apps.Where(app => app.IsSelected).Count();
-        private void ActivateAllApps(List<AppEntity> apps) => apps.ForEach(app => app.Select());
-        private void DeactivateAllApps(List<AppEntity> apps) => apps.ForEach(app => app.Unselect());
+        private void SwitchAll(object sender, EventArgs e)
+        {
+            if (apps.Any(app => !app.IsSelected))
+            {
+                SelectAllApps(apps);
+            }
+            else
+            {
+                UnselectAllApps(apps);
+            }
+            UpdateLaunchButtonStatus(sender, (MouseEventArgs)e);
+        }
+        private void SelectAllApps(List<AppEntity> apps)
+        {
+            apps.ForEach(app => app.Select());
+            WriteToFile(_formConfig.FilePath, apps);
+            UpdateSwitchButtonStatus(switchButton);
+        }
+        private void UnselectAllApps(List<AppEntity> apps)
+        {
+            apps.ForEach(app => app.Unselect());
+            WriteToFile(_formConfig.FilePath, apps);
+            UpdateSwitchButtonStatus(switchButton);
+        }
 
         private void ClickAppIcon(object sender, MouseEventArgs e)
         {
@@ -203,30 +238,25 @@ namespace SoftLauncher
         }
         private void SwitchApp(PictureBox picture)
         {
-            var app = _apps.Find(a => a.PictureBox == picture);
-            if (app.IsSelected)
-            {
-                app.Unselect();
-            }
-            else
-            {
-                app.Select();
-            }
+            var app = apps.Find(a => a.PictureBox == picture);
+            app.Switch();
+            WriteToFile(_formConfig.FilePath, apps);
+            UpdateSwitchButtonStatus(switchButton);
         }
         private void MakeChosen(PictureBox picture)
         {
-            _currentApp = _apps.Find(app => app.PictureBox == picture);
+            _currentApp = apps.Find(app => app.PictureBox == picture);
         }
         private void LaunchSelectedApps(object sender, EventArgs e)
         {
-            foreach (var app in _apps)
+            foreach (var app in apps)
             {
                 if (app.IsSelected)
                 {
                     Process.Start(app.ExecutePath);
                 }
             }
-            DeactivateAllApps(_apps);
+            UnselectAllApps(apps);
         }
 
         private void LoadFormMain(object sender, EventArgs e)
@@ -282,46 +312,49 @@ namespace SoftLauncher
             if (createAppDialog.ShowDialog() == DialogResult.OK)
             {
                 var newApp = createAppDialog.appEntity.Clone();
-                _apps.Add(newApp as AppEntity);
+                apps.Add(newApp as AppEntity);
                 Controls.Add((newApp as AppEntity).PictureBox);
                 InitIconConfig(newApp as AppEntity);
                 UpdateFormSize(this);
-                InitLaunchButtonProps(_launchButton);
-                WriteToFile(_formConfig.FilePath, _apps);
+                InitLaunchButtonProps(launchButton);
+                UpdateSwitchButtonStatus(switchButton);
+                WriteToFile(_formConfig.FilePath, apps);
             }
         }
         private void EditApp(object sender, EventArgs e)
         {
-            var index = _apps.FindIndex(a => a == _currentApp);
-            if (_apps[index] == null) return;
+            var index = apps.FindIndex(a => a == _currentApp);
+            if (apps[index] == null) return;
 
-            CreateAppDialog createAppDialog = new CreateAppDialog(_apps[index]);
+            CreateAppDialog createAppDialog = new CreateAppDialog(apps[index]);
             if (createAppDialog.ShowDialog() == DialogResult.OK)
             {
-                Controls.Remove(_apps[index].PictureBox);
-                _apps[index] = createAppDialog.appEntity;
-                Controls.Add(_apps[index].PictureBox);
-                InitIconConfig(_apps[index]);
-                UpdateLaunchButtonText(_launchButton);
-                WriteToFile(_formConfig.FilePath, _apps);
+                Controls.Remove(apps[index].PictureBox);
+                apps[index] = createAppDialog.appEntity;
+                Controls.Add(apps[index].PictureBox);
+                InitIconConfig(apps[index]);
+                UpdateLaunchButtonText(launchButton);
+                UpdateSwitchButtonStatus(switchButton);
+                WriteToFile(_formConfig.FilePath, apps);
             }
         }
         private void DeleteApp(object sender, EventArgs e)
         {
-            var app = _apps.Find(a => a == _currentApp);
+            var app = apps.Find(a => a == _currentApp);
             if (app == null) return;
 
-            _apps.Remove(app);
+            apps.Remove(app);
             Controls.Remove(app.PictureBox);
             UpdateFormSize(this);
-            UpdateAppImagesLocation(_apps);
-            UpdateLaunchButtonLocation(_launchButton);
-            UpdateLaunchButtonText(_launchButton);
-            WriteToFile(_formConfig.FilePath, _apps);
+            UpdateAppImagesLocation(apps);
+            UpdateLaunchButtonLocation(launchButton);
+            UpdateLaunchButtonText(launchButton);
+            UpdateSwitchButtonStatus(switchButton);
+            WriteToFile(_formConfig.FilePath, apps);
         }
         private void LaunchApp(object sender, MouseEventArgs e)
         {
-            var app = _apps.Find(a => a == _currentApp);
+            var app = apps.Find(a => a == _currentApp);
             if (app == null) return;
 
             if (app.IsSelected)
@@ -332,13 +365,13 @@ namespace SoftLauncher
 
         private void InitIconConfig(AppEntity app)
         {
-            var index = _apps.FindIndex(a => a == app);
-            _apps[index].PictureBox.Location = new Point(
+            var index = apps.FindIndex(a => a == app);
+            apps[index].PictureBox.Location = new Point(
                     _formConfig.Margin + index % _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin),
                     _formConfig.Margin * 2 + _formConfig.ControlButtonSize + index / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin));
-            _apps[index].SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
-            _apps[index].PictureBox.MouseClick += ClickAppIcon;
-            _apps[index].PictureBox.MouseClick += UpdateLaunchButtonStatus;
+            apps[index].SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
+            apps[index].PictureBox.MouseClick += ClickAppIcon;
+            apps[index].PictureBox.MouseClick += UpdateLaunchButtonStatus;
         }
     }
 }

@@ -11,9 +11,16 @@ namespace SoftLauncher
         {
             Index = index;
         }
-        public void Init(string text, Color backColor, Config config, Form form, EventHandler action = null)
+        public void Init(string text, Color backColor, Config config, Form form, EventHandler action = null, string imagePath = null)
         {
-            Text = text;
+            if (imagePath == null)
+            {
+                Text = text;
+            } else
+            {
+                Image = Image.FromFile(imagePath);
+            }
+
             Size = new Size(config.ControlButtonSize, config.ControlButtonSize);
             Font = new Font("San Serif", config.ControlFontSize, FontStyle.Bold);
             Location = new Point(form.Width - (Index + 1) * (config.Margin + config.ControlButtonSize), config.Margin);
