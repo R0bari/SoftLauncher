@@ -8,3 +8,6 @@ E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Release\SoftLauncher.pdb
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Release\SoftLauncher.csprojAssemblyReference.cache
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Release\SoftLauncher.Forms.CreateAppDialog.resources
 E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Release\SoftLauncher.FormMain.resources
+E:\Planfact\Projects\SoftLauncher\SoftLauncher\bin\Release\Newtonsoft.Json.dll
+E:\Planfact\Projects\SoftLauncher\SoftLauncher\bin\Release\Newtonsoft.Json.xml
+E:\Planfact\Projects\SoftLauncher\SoftLauncher\obj\Release\SoftLauncher.csproj.CopyComplete

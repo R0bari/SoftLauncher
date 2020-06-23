@@ -35,6 +35,19 @@ namespace SoftLauncher
             PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             SetSize(size);
         }
+        public AppEntity(AppEntityJson appJson)
+        {
+            AppName = appJson.AppName;
+            ExecutePath = appJson.ExecutePath;
+            IsSelected = appJson.IsSelected;
+            PictureBox = new TransparentPictureBox()
+            {
+                Name = AppName,
+                Image = Icon.ExtractAssociatedIcon(ExecutePath).ToBitmap(),
+            };
+            PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            SetSize(PictureBox.Image.Size);
+        }
 
         public void SetSize(Size size)
         {

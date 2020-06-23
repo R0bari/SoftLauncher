@@ -8,13 +8,15 @@ namespace SoftLauncher
         public int ControlButtonSize { get; }
         public int ControlFontSize { get; }
         public int RowCapacity { get; }
-        public Config(int margin = 50, int iconSize = 75, int controlButtonSize = 30, int rowCapacity = 4)
+        public string FilePath { get; }
+        public Config(string filePath, int margin = 50, int iconSize = 75, int controlButtonSize = 30, int rowCapacity = 4)
         {
             Margin = margin;
             IconSize = iconSize;
             ControlButtonSize = controlButtonSize;
             ControlFontSize = ControlButtonSize / 2;
             RowCapacity = rowCapacity;
+            FilePath = filePath;
         }
     }
 }

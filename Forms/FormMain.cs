@@ -1,11 +1,15 @@
-﻿using SoftLauncher.Forms;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SoftLauncher.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace SoftLauncher
@@ -13,28 +17,12 @@ namespace SoftLauncher
     public partial class FormMain : Form
     {
         private readonly Config _formConfig = new Config(
-               margin: 20,
-               iconSize: 50,
-               controlButtonSize: 25,
-               rowCapacity: 3);
-        private readonly List<AppEntity> _apps = new List<AppEntity>()
-        {
-            new AppEntity(
-                appName: "Skype",
-                executePath: @"C:\Program Files (x86)\Microsoft\Skype for Desktop\Skype.exe"),
-            new AppEntity(
-                appName: "Discord",
-                executePath: @"C:\Users\Eugene\AppData\Local\Discord\app-0.0.305\Discord.exe"),
-            new AppEntity(
-                appName: "Visual Studio",
-                executePath: @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"),
-            new AppEntity(
-                appName: "Visual Studio Code",
-                executePath: @"C:\Users\Eugene\AppData\Local\Programs\Microsoft VS Code\Code.exe"),
-            new AppEntity(
-                appName: "Telegram",
-                executePath: @"E:\Telegram Desktop\Telegram.exe")
-        };
+            filePath: "apps.json",
+            margin: 20,
+            iconSize: 50,
+            controlButtonSize: 25,
+            rowCapacity: 3);
+        private readonly List<AppEntity> _apps = new List<AppEntity>();
         private AppEntity _currentApp = new AppEntity();
         private readonly ControlButton _quitButton = new ControlButton(index: 0);
         private readonly ControlButton _hideButton = new ControlButton(index: 1);
@@ -49,6 +37,7 @@ namespace SoftLauncher
             InitializeComponent();
             DeleteFormBorders(this);
 
+            _apps = ReadFromFile(_formConfig.FilePath);
             InitAppImages(
                 apps: _apps,
                 switchApp: ClickAppIcon,
@@ -56,14 +45,62 @@ namespace SoftLauncher
             UpdateFormSize(this);
             InitLaunchButton(_launchButton, LaunchSelectedApps);
             InitControlButtons(
-                quitButton: _quitButton, 
-                addButton: _addButton, 
+                quitButton: _quitButton,
+                addButton: _addButton,
                 hideButton: _hideButton);
 
             ActivateAllApps(_apps);
             UpdateLaunchButtonText(_launchButton);
         }
 
+        private List<AppEntity> ReadFromFile(string filePath)
+        {
+            
+            using (StreamReader stream = new StreamReader(filePath))
+            {
+                var jsonString = stream.ReadToEnd();
+                var jsonApps = new List<AppEntityJson>();
+                try
+                {
+                    jsonApps = JsonConvert.DeserializeObject<List<AppEntityJson>>(jsonString);
+                }
+                catch
+                {
+                    MessageBox.Show($"Can't read apps list from file \"{Environment.CurrentDirectory}\\{filePath}\"", "Read error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                
+                var apps = new List<AppEntity>();
+
+                if (jsonApps is List<AppEntityJson>)
+                {
+                    (jsonApps as List<AppEntityJson>).ForEach(jsonApp => apps.Add(new AppEntity(jsonApp)));
+                }
+                return apps;
+            }
+        }
+        private void WriteToFile(string filePath, List<AppEntity> apps)
+        {
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath);
+            }
+
+            var jsonApps = new List<AppEntityJson>();
+            _apps.ForEach(app => jsonApps.Add(new AppEntityJson(app)));
+
+            using (StreamWriter stream = new StreamWriter(filePath))
+            {
+                try
+                {
+                    stream.Write(JsonConvert.SerializeObject(jsonApps));
+                }
+                catch
+                {
+                    MessageBox.Show("Can't write apps list to file \"{Environment.CurrentDirectory}\\{filePath}\"", "Write error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+            }
+        }
         private void DeleteFormBorders(FormMain form)
         {
             form.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -79,6 +116,7 @@ namespace SoftLauncher
                 app.PictureBox.Image = Icon.ExtractAssociatedIcon(app.ExecutePath).ToBitmap();
                 app.SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
                 app.PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                app.PictureBox.MouseDoubleClick += LaunchApp;
                 app.PictureBox.MouseClick += switchApp;
                 app.PictureBox.MouseClick += updateLaunchButtonStatus;
                 Controls.Add(app.PictureBox);
@@ -249,6 +287,7 @@ namespace SoftLauncher
                 InitIconConfig(newApp as AppEntity);
                 UpdateFormSize(this);
                 InitLaunchButtonProps(_launchButton);
+                WriteToFile(_formConfig.FilePath, _apps);
             }
         }
         private void EditApp(object sender, EventArgs e)
@@ -264,6 +303,7 @@ namespace SoftLauncher
                 Controls.Add(_apps[index].PictureBox);
                 InitIconConfig(_apps[index]);
                 UpdateLaunchButtonText(_launchButton);
+                WriteToFile(_formConfig.FilePath, _apps);
             }
         }
         private void DeleteApp(object sender, EventArgs e)
@@ -277,8 +317,9 @@ namespace SoftLauncher
             UpdateAppImagesLocation(_apps);
             UpdateLaunchButtonLocation(_launchButton);
             UpdateLaunchButtonText(_launchButton);
+            WriteToFile(_formConfig.FilePath, _apps);
         }
-        private void LaunchApp(object sender, EventArgs e)
+        private void LaunchApp(object sender, MouseEventArgs e)
         {
             var app = _apps.Find(a => a == _currentApp);
             if (app == null) return;
