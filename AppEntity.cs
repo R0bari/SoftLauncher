@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -50,6 +51,17 @@ namespace SoftLauncher
             PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
+        public void Launch()
+        {
+            try
+            {
+                Process.Start(ExecutePath);
+            }
+            catch
+            {
+                MessageBox.Show($"Failed to start application {AppName}", "Launch app error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
         public void Switch()
         {
             if (IsSelected)

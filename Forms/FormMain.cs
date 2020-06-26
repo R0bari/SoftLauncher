@@ -241,7 +241,7 @@ namespace SoftLauncher
             {
                 if (app.IsSelected)
                 {
-                    Process.Start(app.ExecutePath);
+                    app.Launch();
                 }
             }
             UnselectAllApps(apps, sender, e);
@@ -347,7 +347,7 @@ namespace SoftLauncher
 
             if (app.IsSelected)
             {
-                Process.Start(app.ExecutePath);
+                app.Launch();
             }
         }
 
