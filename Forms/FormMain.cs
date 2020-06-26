@@ -100,6 +100,7 @@ namespace SoftLauncher
 
             }
         }
+
         private void DeleteFormBorders(FormMain form)
         {
             form.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -173,7 +174,7 @@ namespace SoftLauncher
             }
             UpdateLaunchButtonText(launchButton);
         }
-        private void UpdateSwitchButtonStatus(Button switchAllButton) => switchAllButton.BackColor = (apps.Any(app => !app.IsSelected)) ? Color.PaleGreen : Color.IndianRed;
+        private void UpdateSwitchButtonStatus(Button switchAllButton) => switchAllButton.BackColor = (apps.Any(app => !app.IsSelected)) ? Color.IndianRed : Color.PaleGreen;
 
         private void InitControlButtons(ControlButton quitButton, ControlButton hideButton, ControlButton addButton, ControlButton switchButton)
         {
@@ -188,25 +189,27 @@ namespace SoftLauncher
         {
             if (apps.Any(app => !app.IsSelected))
             {
-                SelectAllApps(apps);
+                SelectAllApps(apps, sender, e);
             }
             else
             {
-                UnselectAllApps(apps);
+                UnselectAllApps(apps, sender, e);
             }
             UpdateLaunchButtonStatus(sender, (MouseEventArgs)e);
         }
-        private void SelectAllApps(List<AppEntity> apps)
+        private void SelectAllApps(List<AppEntity> apps, object sender, EventArgs e)
         {
             apps.ForEach(app => app.Select());
             WriteToFile(_formConfig.FilePath, apps);
             UpdateSwitchButtonStatus(switchButton);
+            UpdateLaunchButtonStatus(sender, e);
         }
-        private void UnselectAllApps(List<AppEntity> apps)
+        private void UnselectAllApps(List<AppEntity> apps, object sender, EventArgs e)
         {
             apps.ForEach(app => app.Unselect());
             WriteToFile(_formConfig.FilePath, apps);
             UpdateSwitchButtonStatus(switchButton);
+            UpdateLaunchButtonStatus(sender, e);
         }
 
         private void ClickAppIcon(object sender, MouseEventArgs e)
@@ -241,7 +244,7 @@ namespace SoftLauncher
                     Process.Start(app.ExecutePath);
                 }
             }
-            UnselectAllApps(apps);
+            UnselectAllApps(apps, sender, e);
         }
 
         private void LoadFormMain(object sender, EventArgs e)
