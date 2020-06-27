@@ -103,7 +103,6 @@ namespace SoftLauncher
         {
             form.FormBorderStyle = FormBorderStyle.FixedDialog;
             form.ControlBox = false;
-            form.Text = "";
         }
 
         private void InitAppImages(List<AppEntity> apps, MouseEventHandler switchApp, MouseEventHandler updateLaunchButtonStatus)
@@ -114,7 +113,6 @@ namespace SoftLauncher
                 app.PictureBox.Image = Icon.ExtractAssociatedIcon(app.ExecutePath).ToBitmap();
                 app.SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
                 app.PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-                app.PictureBox.MouseDoubleClick += LaunchApp;
                 app.PictureBox.MouseClick += switchApp;
                 app.PictureBox.MouseClick += updateLaunchButtonStatus;
                 Controls.Add(app.PictureBox);
@@ -186,6 +184,7 @@ namespace SoftLauncher
         private int CountActivatedAppIcons(List<AppEntity> apps) => apps.Where(app => app.IsSelected).Count();
         private void SwitchAll(object sender, EventArgs e)
         {
+            Player.PlaySound(PlayerSound.Click);
             if (apps.Any(app => !app.IsSelected))
             {
                 SelectAllApps(apps, sender, e);
@@ -213,6 +212,7 @@ namespace SoftLauncher
 
         private void ClickAppIcon(object sender, MouseEventArgs e)
         {
+            Player.PlaySound(PlayerSound.Click);
             if (e.Button == MouseButtons.Left)
             {
                 SwitchApp(sender as PictureBox);
@@ -225,7 +225,6 @@ namespace SoftLauncher
         }
         private void SwitchApp(PictureBox picture)
         {
-            Player.PlaySound(PlayerSound.Click);
             var app = apps.Find(a => a.PictureBox == picture);
             app.Switch();
             WriteToFile(_formConfig.FilePath, apps);
@@ -295,12 +294,18 @@ namespace SoftLauncher
 
         private void ExitApp(object sender, EventArgs e)
         {
+            Player.PlaySound(PlayerSound.Click);
             Player.PlaySound(PlayerSound.Exit);
             Application.Exit();
         }
-        private void HideApp(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
+        private void HideApp(object sender, EventArgs e)
+        {
+            Player.PlaySound(PlayerSound.Click);
+            WindowState = FormWindowState.Minimized;
+        }
         private void AddApp(object sender, EventArgs e)
         {
+            Player.PlaySound(PlayerSound.Click);
             CreateAppDialog createAppDialog = new CreateAppDialog();
             if (createAppDialog.ShowDialog() == DialogResult.OK)
             {
@@ -321,6 +326,7 @@ namespace SoftLauncher
         }
         private void EditApp(object sender, EventArgs e)
         {
+            Player.PlaySound(PlayerSound.Click);
             var index = apps.FindIndex(a => a == _currentApp);
             if (apps[index] == null) return;
 
@@ -358,13 +364,11 @@ namespace SoftLauncher
         }
         private void LaunchApp(object sender, MouseEventArgs e)
         {
+            Player.PlaySound(PlayerSound.Click);
             var app = apps.Find(a => a == _currentApp);
             if (app == null) return;
 
-            if (app.IsSelected)
-            {
-                app.Launch();
-            }
+            app.Launch();
         }
 
         private void InitIconConfig(AppEntity app)
