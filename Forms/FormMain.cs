@@ -25,6 +25,7 @@ namespace SoftLauncher
             controlButtonSize: 32,
             rowCapacity: 3);
         private readonly Logger logger = new Logger("log.txt");
+        private readonly Sounds sounds = new Sounds();
         private readonly List<AppEntity> apps = new List<AppEntity>();
         private AppEntity _currentApp = new AppEntity();
         private readonly ControlButton quitButton = new ControlButton(index: 0);
@@ -54,7 +55,7 @@ namespace SoftLauncher
                 switchButton: switchButton);
             InitLaunchButton(launchButton, LaunchSelectedApps, apps);
 
-            UpdateSwitchButtonStatus(switchButton);
+            UpdateSwitchButtonStatus(switchButton, apps);
             UpdateLaunchButtonText(launchButton);
         }
 
@@ -173,7 +174,11 @@ namespace SoftLauncher
             }
             UpdateLaunchButtonText(launchButton);
         }
-        private void UpdateSwitchButtonStatus(Button switchAllButton) => switchAllButton.BackColor = (apps.Any(app => !app.IsSelected)) ? Color.IndianRed : Color.PaleGreen;
+        private void UpdateSwitchButtonStatus(Button switchAllButton, List<AppEntity> apps)
+        {
+            switchAllButton.BackColor = (apps.Any(app => !app.IsSelected)) ? Color.IndianRed : Color.PaleGreen;
+            switchButton.Tip.SetToolTip(switchButton, apps.Any(app => !app.IsSelected) ? "Select All" : "Unselect All");
+        }
 
         private void InitControlButtons(ControlButton quitButton, ControlButton hideButton, ControlButton addButton, ControlButton switchButton)
         {
@@ -186,14 +191,16 @@ namespace SoftLauncher
         private int CountActivatedAppIcons(List<AppEntity> apps) => apps.Where(app => app.IsSelected).Count();
         private void SwitchAll(object sender, EventArgs e)
         {
-            Player.PlaySound(Sound.Click);
+            Player.PlaySound(sounds.Click);
             if (apps.Any(app => !app.IsSelected))
             {
                 SelectAllApps(apps, sender, e);
+                switchButton.Tip.SetToolTip(switchButton, "Unselect All");
             }
             else
             {
                 UnselectAllApps(apps, sender, e);
+                switchButton.Tip.SetToolTip(switchButton, "Select All");
             }
             UpdateLaunchButtonStatus(sender, e);
         }
@@ -201,20 +208,20 @@ namespace SoftLauncher
         {
             apps.ForEach(app => app.Select());
             WriteToFile(config.FilePath, apps);
-            UpdateSwitchButtonStatus(switchButton);
+            UpdateSwitchButtonStatus(switchButton, apps);
             UpdateLaunchButtonStatus(sender, e);
         }
         private void UnselectAllApps(List<AppEntity> apps, object sender, EventArgs e)
         {
             apps.ForEach(app => app.Unselect());
             WriteToFile(config.FilePath, apps);
-            UpdateSwitchButtonStatus(switchButton);
+            UpdateSwitchButtonStatus(switchButton, apps);
             UpdateLaunchButtonStatus(sender, e);
         }
 
         private void ClickAppIcon(object sender, MouseEventArgs e)
         {
-            Player.PlaySound(Sound.Click);
+            Player.PlaySound(sounds.Click);
             if (e.Button == MouseButtons.Left)
             {
                 SwitchApp(sender as PictureBox);
@@ -230,7 +237,7 @@ namespace SoftLauncher
             var app = apps.Find(a => a.PictureBox == picture);
             app.Switch();
             WriteToFile(config.FilePath, apps);
-            UpdateSwitchButtonStatus(switchButton);
+            UpdateSwitchButtonStatus(switchButton, apps);
         }
         private void MakeCurrent(PictureBox picture)
         {
@@ -238,7 +245,7 @@ namespace SoftLauncher
         }
         private void LaunchSelectedApps(object sender, EventArgs e)
         {
-            Player.PlaySound(Sound.Click);
+            Player.PlaySound(sounds.Click);
             foreach (var app in apps)
             {
                 if (app.IsSelected)
@@ -254,7 +261,7 @@ namespace SoftLauncher
             {
                 RunWithAdminRight();
             }
-            Player.PlaySound(Sound.Start);
+            Player.PlaySound(sounds.Start);
         }
         private bool HasAdminRight()
         {
@@ -297,18 +304,18 @@ namespace SoftLauncher
 
         private void ExitApp(object sender, EventArgs e)
         {
-            Player.PlaySound(Sound.Click);
-            Player.PlaySound(Sound.Exit);
+            Player.PlaySound(sounds.Click);
+            Player.PlaySound(sounds.Exit);
             Application.Exit();
         }
         private void HideApp(object sender, EventArgs e)
         {
-            Player.PlaySound(Sound.Click);
+            Player.PlaySound(sounds.Click);
             WindowState = FormWindowState.Minimized;
         }
         private void AddApp(object sender, EventArgs e)
         {
-            Player.PlaySound(Sound.Click);
+            Player.PlaySound(sounds.Click);
             var createAppDialog = new CreateAppDialog();
             if (createAppDialog.ShowDialog() == DialogResult.OK)
             {
@@ -318,19 +325,19 @@ namespace SoftLauncher
                 InitIconConfig(newApp);
                 UpdateFormSize(this);
                 InitLaunchButtonProps(launchButton);
-                UpdateSwitchButtonStatus(switchButton);
+                UpdateSwitchButtonStatus(switchButton, apps);
                 WriteToFile(config.FilePath, apps);
-                Player.PlaySound(Sound.PositiveAction);
+                Player.PlaySound(sounds.PositiveAction);
                 logger.Log(LogType.Add, newApp.AppName);
             } 
             else
             {
-                Player.PlaySound(Sound.NegativeAction);
+                Player.PlaySound(sounds.NegativeAction);
             }
         }
         private void EditApp(object sender, EventArgs e)
         {
-            Player.PlaySound(Sound.Click);
+            Player.PlaySound(sounds.Click);
             var index = apps.FindIndex(a => a == _currentApp);
             if (apps[index] == null) return;
 
@@ -342,14 +349,14 @@ namespace SoftLauncher
                 Controls.Add(apps[index].PictureBox);
                 InitIconConfig(apps[index]);
                 UpdateLaunchButtonText(launchButton);
-                UpdateSwitchButtonStatus(switchButton);
+                UpdateSwitchButtonStatus(switchButton, apps);
                 WriteToFile(config.FilePath, apps);
-                Player.PlaySound(Sound.PositiveAction);
+                Player.PlaySound(sounds.PositiveAction);
                 logger.Log(LogType.Edit, apps[index].AppName);
             }
             else
             {
-                Player.PlaySound(Sound.NegativeAction);
+                Player.PlaySound(sounds.NegativeAction);
             }
         }
         private void DeleteApp(object sender, EventArgs e)
@@ -363,14 +370,14 @@ namespace SoftLauncher
             UpdateAppImagesLocation(apps);
             UpdateLaunchButtonLocation(launchButton);
             UpdateLaunchButtonText(launchButton);
-            UpdateSwitchButtonStatus(switchButton);
+            UpdateSwitchButtonStatus(switchButton, apps);
             WriteToFile(config.FilePath, apps);
-            Player.PlaySound(Sound.NegativeAction);
+            Player.PlaySound(sounds.NegativeAction);
             logger.Log(LogType.Delete, app.AppName);
         }
         private void LaunchApp(object sender, MouseEventArgs e)
         {
-            Player.PlaySound(Sound.Click);
+            Player.PlaySound(sounds.Click);
             var app = apps.Find(a => a == _currentApp);
             if (app == null) return;
 

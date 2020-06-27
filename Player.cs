@@ -17,7 +17,7 @@ namespace SoftLauncher
         {
             try
             {
-                var player = new SoundPlayer(sound.Value);
+                var player = new SoundPlayer(sound.Name);
                 player.Play();
             }
             catch (PlayerSoundException ex)
@@ -28,14 +28,23 @@ namespace SoftLauncher
         }
     }
 
+    public class Sounds
+    {
+        public Sounds() { }
+
+        public string Value { get; set; }
+        public Sound Start { get { return new Sound(@"sounds\Start.wav"); } }
+        public Sound Exit { get { return new Sound(@"sounds\Exit.wav"); } }
+        public Sound Click { get { return new Sound(@"sounds\Switch App.wav"); } }
+        public Sound PositiveAction { get { return new Sound(@"sounds\Speech On.wav"); } }
+        public Sound NegativeAction { get { return new Sound(@"sounds\Speech Off.wav"); } }
+    }
+
     public class Sound
     {
-        private Sound(string value) { Value = value; }
-        public string Value { get; set; }
-        public static Sound Start { get { return new Sound(@"sounds\Start.wav"); } }
-        public static Sound Exit { get { return new Sound(@"sounds\Exit.wav"); } }
-        public static Sound Click { get { return new Sound(@"sounds\Switch App.wav"); } }
-        public static Sound PositiveAction { get { return new Sound(@"sounds\Speech On.wav"); } }
-        public static Sound NegativeAction { get { return new Sound(@"sounds\Speech Off.wav"); } }
+        public string Name { get; private set; }
+        public Sound(string name) => Name = name;
+
+
     }
 }
