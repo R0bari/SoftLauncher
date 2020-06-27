@@ -247,11 +247,6 @@ namespace SoftLauncher
             }
             UnselectAllApps(apps, sender, e);
         }
-
-        private void CloseFormMain(object sender, FormClosedEventArgs e)
-        {
-            
-        }
         private void LoadFormMain(object sender, EventArgs e)
         {
             if (!HasAdminRight())
