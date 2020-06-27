@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -22,6 +23,7 @@ namespace SoftLauncher
             iconSize: 64,
             controlButtonSize: 32,
             rowCapacity: 3);
+        private SoundPlayer soundPlayer;
         private readonly List<AppEntity> apps = new List<AppEntity>();
         private AppEntity _currentApp = new AppEntity();
         private readonly ControlButton quitButton = new ControlButton(index: 0);
@@ -137,7 +139,7 @@ namespace SoftLauncher
         private void InitLaunchButton(Button launchButton, EventHandler launchSelectedApps, List<AppEntity> apps)
         {
             InitLaunchButtonProps(launchButton);
-            launchButton.Enabled = apps.Count > 0;
+            launchButton.Enabled = apps.Where(a => a.IsSelected).Count() > 0;
             launchButton.Click += launchSelectedApps;
             Controls.Add(launchButton);
         }
@@ -223,6 +225,7 @@ namespace SoftLauncher
         }
         private void SwitchApp(PictureBox picture)
         {
+            Player.PlaySound(PlayerSound.Click);
             var app = apps.Find(a => a.PictureBox == picture);
             app.Switch();
             WriteToFile(_formConfig.FilePath, apps);
@@ -234,6 +237,7 @@ namespace SoftLauncher
         }
         private void LaunchSelectedApps(object sender, EventArgs e)
         {
+            Player.PlaySound(PlayerSound.Click);
             foreach (var app in apps)
             {
                 if (app.IsSelected)
@@ -244,12 +248,17 @@ namespace SoftLauncher
             UnselectAllApps(apps, sender, e);
         }
 
+        private void CloseFormMain(object sender, FormClosedEventArgs e)
+        {
+            
+        }
         private void LoadFormMain(object sender, EventArgs e)
         {
             if (!HasAdminRight())
             {
                 RunWithAdminRight();
             }
+            Player.PlaySound(PlayerSound.Start);
         }
         private bool HasAdminRight()
         {
@@ -289,7 +298,11 @@ namespace SoftLauncher
             }
         }
 
-        private void ExitApp(object sender, EventArgs e) => Application.Exit();
+        private void ExitApp(object sender, EventArgs e)
+        {
+            Player.PlaySound(PlayerSound.Exit);
+            Application.Exit();
+        }
         private void HideApp(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
         private void AddApp(object sender, EventArgs e)
         {
@@ -304,6 +317,11 @@ namespace SoftLauncher
                 InitLaunchButtonProps(launchButton);
                 UpdateSwitchButtonStatus(switchButton);
                 WriteToFile(_formConfig.FilePath, apps);
+                Player.PlaySound(PlayerSound.PositiveAction);
+            } 
+            else
+            {
+                Player.PlaySound(PlayerSound.NegativeAction);
             }
         }
         private void EditApp(object sender, EventArgs e)
@@ -321,6 +339,11 @@ namespace SoftLauncher
                 UpdateLaunchButtonText(launchButton);
                 UpdateSwitchButtonStatus(switchButton);
                 WriteToFile(_formConfig.FilePath, apps);
+                Player.PlaySound(PlayerSound.PositiveAction);
+            }
+            else
+            {
+                Player.PlaySound(PlayerSound.NegativeAction);
             }
         }
         private void DeleteApp(object sender, EventArgs e)
@@ -336,6 +359,7 @@ namespace SoftLauncher
             UpdateLaunchButtonText(launchButton);
             UpdateSwitchButtonStatus(switchButton);
             WriteToFile(_formConfig.FilePath, apps);
+            Player.PlaySound(PlayerSound.NegativeAction);
         }
         private void LaunchApp(object sender, MouseEventArgs e)
         {
