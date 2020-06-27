@@ -9,6 +9,8 @@ namespace SoftLauncher
     [Serializable]
     public class AppEntityJson
     {
+        public string LoggerPath { get; set; }
+        public bool IsLoggingActive { get; set; }
         public string AppName { get; set; }
         public string ExecutePath { get; set; }
         public bool IsSelected { get; set; }
@@ -18,6 +20,11 @@ namespace SoftLauncher
             AppName = app.AppName;
             ExecutePath = app.ExecutePath;
             IsSelected = app.IsSelected;
+            IsLoggingActive = app.IsLoggingActive;
+            if (IsLoggingActive)
+            {
+                LoggerPath = app.Logger.Path;
+            }
         }
         public static List<AppEntity> Convert(List<AppEntityJson> jsonApps)
         {

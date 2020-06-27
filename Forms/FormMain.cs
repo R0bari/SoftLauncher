@@ -58,7 +58,7 @@ namespace SoftLauncher
             InitLaunchButton(launchButton, LaunchSelectedApps, apps);
 
             UpdateSwitchButtonStatus(switchButton, apps);
-            UpdateLaunchButtonText(launchButton);
+            UpdateLaunchButtonText(launchButton, apps);
         }
 
         private List<AppEntity> ReadFromFile(string filePath)
@@ -141,12 +141,12 @@ namespace SoftLauncher
         }
         private void InitLaunchButton(Button launchButton, EventHandler launchSelectedApps, List<AppEntity> apps)
         {
-            InitLaunchButtonProps(launchButton);
+            InitLaunchButtonProps(launchButton, apps);
             launchButton.Enabled = apps.Where(a => a.IsSelected).Count() > 0;
             launchButton.Click += launchSelectedApps;
             Controls.Add(launchButton);
         }
-        private void InitLaunchButtonProps(Button launchButton)
+        private void InitLaunchButtonProps(Button launchButton, List<AppEntity> apps)
         {
             launchButton.Size = new Size(Width - 2 * config.Margin, config.IconSize);
             launchButton.BackColor = Color.PaleGreen;
@@ -154,13 +154,13 @@ namespace SoftLauncher
             launchButton.FlatStyle = FlatStyle.Flat;
             launchButton.Font = new Font("San Serif", config.ControlFontSize, FontStyle.Regular);
             UpdateLaunchButtonLocation(launchButton);
-            UpdateLaunchButtonText(launchButton);
+            UpdateLaunchButtonText(launchButton, apps);
         }
         private void UpdateLaunchButtonLocation(Button launchButton)
         {
             launchButton.Location = new Point(config.Margin, Height - config.Margin - config.IconSize);
         }
-        private void UpdateLaunchButtonText(Button launchButton) => launchButton.Text = launchButton.Enabled
+        private void UpdateLaunchButtonText(Button launchButton, List<AppEntity> apps) => launchButton.Text = launchButton.Enabled
                 ? "Launch (" + CountActivatedAppIcons(apps) + ")"
                 : "Launch";
         private void UpdateLaunchButtonStatus(object sender, EventArgs e)
@@ -174,7 +174,7 @@ namespace SoftLauncher
                     break;
                 }
             }
-            UpdateLaunchButtonText(launchButton);
+            UpdateLaunchButtonText(launchButton, apps);
         }
         private void UpdateSwitchButtonStatus(Button switchAllButton, List<AppEntity> apps)
         {
@@ -259,11 +259,7 @@ namespace SoftLauncher
         }
         private void LoadFormMain(object sender, EventArgs e)
         {
-            if (!HasAdminRight())
-            {
-                RunWithAdminRight();
-            }
-            player.PlaySound(sounds.Start);
+
         }
         private bool HasAdminRight()
         {
@@ -326,7 +322,7 @@ namespace SoftLauncher
                 Controls.Add(newApp.PictureBox);
                 InitIconConfig(newApp);
                 UpdateFormSize(this);
-                InitLaunchButtonProps(launchButton);
+                InitLaunchButtonProps(launchButton, apps);
                 UpdateSwitchButtonStatus(switchButton, apps);
                 WriteToFile(config.FilePath, apps);
                 player.PlaySound(sounds.PositiveAction);
@@ -350,7 +346,7 @@ namespace SoftLauncher
                 apps[index] = createAppDialog.appEntity;
                 Controls.Add(apps[index].PictureBox);
                 InitIconConfig(apps[index]);
-                UpdateLaunchButtonText(launchButton);
+                UpdateLaunchButtonText(launchButton, apps);
                 UpdateSwitchButtonStatus(switchButton, apps);
                 WriteToFile(config.FilePath, apps);
                 player.PlaySound(sounds.PositiveAction);
@@ -371,7 +367,7 @@ namespace SoftLauncher
             UpdateFormSize(this);
             UpdateAppImagesLocation(apps);
             UpdateLaunchButtonLocation(launchButton);
-            UpdateLaunchButtonText(launchButton);
+            UpdateLaunchButtonText(launchButton, apps);
             UpdateSwitchButtonStatus(switchButton, apps);
             WriteToFile(config.FilePath, apps);
             player.PlaySound(sounds.NegativeAction);

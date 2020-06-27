@@ -8,7 +8,8 @@ namespace SoftLauncher
 {
     public class AppEntity : ICloneable
     {
-        private readonly Logger logger = new Logger("log.txt");
+        public Logger Logger { get; private set; }
+        public bool IsLoggingActive { get; private set; } = false;
         public string AppName { get; set; }
         public string ExecutePath { get; set; }
         public TransparentPictureBox PictureBox { get; set; }
@@ -30,6 +31,8 @@ namespace SoftLauncher
         {
             AppName = appJson.AppName;
             ExecutePath = appJson.ExecutePath;
+            IsLoggingActive = appJson.IsLoggingActive;
+            Logger = new Logger(appJson.LoggerPath);
             PictureBox = new TransparentPictureBox()
             {
                 Name = AppName,
@@ -58,12 +61,18 @@ namespace SoftLauncher
             try
             {
                 Process.Start(ExecutePath);
-                logger.Log(LogType.Launch, AppName);
+                if (IsLoggingActive)
+                {
+                    Logger.Log(LogType.Launch, AppName);
+                }
             }
             catch (LaunchAppException ex)
             {
                 MessageBox.Show(ex.Message, ex.MessageCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                logger.Log(LogType.Error, ex.Message);
+                if (IsLoggingActive)
+                {
+                    Logger.Log(LogType.Error, ex.Message);
+                }
             }
         }
         public void Switch()
@@ -87,6 +96,12 @@ namespace SoftLauncher
             PictureBox.BackColor = Color.Transparent;
             PictureBox.BorderStyle = BorderStyle.None;
             IsSelected = false;
+        }
+        
+        public void AddLogging(Logger logger)
+        {
+            Logger = logger;
+            IsLoggingActive = true;
         }
 
         public object Clone() => new AppEntity(AppName, ExecutePath);
