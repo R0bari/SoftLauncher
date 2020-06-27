@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SoftLauncher.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Media;
@@ -10,29 +11,31 @@ namespace SoftLauncher
 {
     public class Player
     {
+        private static readonly Logger logger = new Logger("log.txt");
         public Player() { }
-        public static void PlaySound(PlayerSound playerSound)
+        public static void PlaySound(Sound sound)
         {
             try
             {
-                var player = new SoundPlayer(playerSound.Value);
+                var player = new SoundPlayer(sound.Value);
                 player.Play();
             }
-            catch (Exception ex)
+            catch (PlayerSoundException ex)
             {
-                MessageBox.Show(ex.Message, "Playing sound error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.Message, ex.MessageCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                logger.Log(LogType.Error, ex.Message);
             }
         }
     }
 
-    public class PlayerSound
+    public class Sound
     {
-        private PlayerSound(string value) { Value = value; }
+        private Sound(string value) { Value = value; }
         public string Value { get; set; }
-        public static PlayerSound Start { get { return new PlayerSound(@"sounds\Start.wav"); } }
-        public static PlayerSound Exit { get { return new PlayerSound(@"sounds\Exit.wav"); } }
-        public static PlayerSound Click { get { return new PlayerSound(@"sounds\Switch App.wav"); } }
-        public static PlayerSound PositiveAction { get { return new PlayerSound(@"sounds\Speech On.wav"); } }
-        public static PlayerSound NegativeAction { get { return new PlayerSound(@"sounds\Speech Off.wav"); } }
+        public static Sound Start { get { return new Sound(@"sounds\Start.wav"); } }
+        public static Sound Exit { get { return new Sound(@"sounds\Exit.wav"); } }
+        public static Sound Click { get { return new Sound(@"sounds\Switch App.wav"); } }
+        public static Sound PositiveAction { get { return new Sound(@"sounds\Speech On.wav"); } }
+        public static Sound NegativeAction { get { return new Sound(@"sounds\Speech Off.wav"); } }
     }
 }

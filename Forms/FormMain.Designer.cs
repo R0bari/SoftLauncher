@@ -84,8 +84,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormMain";
             this.Opacity = 0.98D;
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.LoadFormMain);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.HoldForm);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DragForm);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UnholdForm);

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SoftLauncher.Exceptions;
 using SoftLauncher.Forms;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace SoftLauncher
             iconSize: 64,
             controlButtonSize: 32,
             rowCapacity: 3);
-        private Logger logger = new Logger("log.txt");
+        private readonly Logger logger = new Logger("log.txt");
         private readonly List<AppEntity> apps = new List<AppEntity>();
         private AppEntity _currentApp = new AppEntity();
         private readonly ControlButton quitButton = new ControlButton(index: 0);
@@ -68,11 +69,10 @@ namespace SoftLauncher
                 {
                     jsonApps = JsonConvert.DeserializeObject<List<AppEntityJson>>(jsonString);
                 }
-                catch
+                catch (JsonReadException ex)
                 {
-                    var message = $"Can't read apps list from file \"{Environment.CurrentDirectory}\\{filePath}\"";
-                    MessageBox.Show(message, "Read error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    logger.Log(LogType.Error, message);
+                    MessageBox.Show(ex.Message, ex.MessageCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    logger.Log(LogType.Error, ex.Message);
                 }
 
                 return AppEntityJson.Convert(jsonApps);
@@ -93,13 +93,11 @@ namespace SoftLauncher
                 {
                     stream.Write(JsonConvert.SerializeObject(jsonApps));
                 }
-                catch
+                catch (JsonWriteException ex)
                 {
-                    var message = $"Can't write apps list to file \"{Environment.CurrentDirectory}\\{filePath}\"";
-                    MessageBox.Show(message, "Write error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    logger.Log(LogType.Error, message);
+                    MessageBox.Show(ex.Message, ex.MessageCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    logger.Log(LogType.Error, ex.Message);
                 }
-
             }
         }
 
@@ -188,7 +186,7 @@ namespace SoftLauncher
         private int CountActivatedAppIcons(List<AppEntity> apps) => apps.Where(app => app.IsSelected).Count();
         private void SwitchAll(object sender, EventArgs e)
         {
-            Player.PlaySound(PlayerSound.Click);
+            Player.PlaySound(Sound.Click);
             if (apps.Any(app => !app.IsSelected))
             {
                 SelectAllApps(apps, sender, e);
@@ -216,7 +214,7 @@ namespace SoftLauncher
 
         private void ClickAppIcon(object sender, MouseEventArgs e)
         {
-            Player.PlaySound(PlayerSound.Click);
+            Player.PlaySound(Sound.Click);
             if (e.Button == MouseButtons.Left)
             {
                 SwitchApp(sender as PictureBox);
@@ -240,7 +238,7 @@ namespace SoftLauncher
         }
         private void LaunchSelectedApps(object sender, EventArgs e)
         {
-            Player.PlaySound(PlayerSound.Click);
+            Player.PlaySound(Sound.Click);
             foreach (var app in apps)
             {
                 if (app.IsSelected)
@@ -256,7 +254,7 @@ namespace SoftLauncher
             {
                 RunWithAdminRight();
             }
-            Player.PlaySound(PlayerSound.Start);
+            Player.PlaySound(Sound.Start);
         }
         private bool HasAdminRight()
         {
@@ -274,11 +272,10 @@ namespace SoftLauncher
             {
                 Process.Start(programWithAdminRight);
             }
-            catch (Win32Exception)
+            catch (Win32Exception ex)
             {
-                var message = "Приложению необходимы права администратора!";
-                MessageBox.Show(message);
-                logger.Log(LogType.Error, message);
+                MessageBox.Show(ex.Message, "Недостаточно прав", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                logger.Log(LogType.Error, ex.Message);
             }
             Application.Exit();
         }
@@ -300,19 +297,19 @@ namespace SoftLauncher
 
         private void ExitApp(object sender, EventArgs e)
         {
-            Player.PlaySound(PlayerSound.Click);
-            Player.PlaySound(PlayerSound.Exit);
+            Player.PlaySound(Sound.Click);
+            Player.PlaySound(Sound.Exit);
             Application.Exit();
         }
         private void HideApp(object sender, EventArgs e)
         {
-            Player.PlaySound(PlayerSound.Click);
+            Player.PlaySound(Sound.Click);
             WindowState = FormWindowState.Minimized;
         }
         private void AddApp(object sender, EventArgs e)
         {
-            Player.PlaySound(PlayerSound.Click);
-            CreateAppDialog createAppDialog = new CreateAppDialog();
+            Player.PlaySound(Sound.Click);
+            var createAppDialog = new CreateAppDialog();
             if (createAppDialog.ShowDialog() == DialogResult.OK)
             {
                 var newApp = (createAppDialog.appEntity.Clone() as AppEntity);
@@ -323,21 +320,21 @@ namespace SoftLauncher
                 InitLaunchButtonProps(launchButton);
                 UpdateSwitchButtonStatus(switchButton);
                 WriteToFile(config.FilePath, apps);
-                Player.PlaySound(PlayerSound.PositiveAction);
+                Player.PlaySound(Sound.PositiveAction);
                 logger.Log(LogType.Add, newApp.AppName);
             } 
             else
             {
-                Player.PlaySound(PlayerSound.NegativeAction);
+                Player.PlaySound(Sound.NegativeAction);
             }
         }
         private void EditApp(object sender, EventArgs e)
         {
-            Player.PlaySound(PlayerSound.Click);
+            Player.PlaySound(Sound.Click);
             var index = apps.FindIndex(a => a == _currentApp);
             if (apps[index] == null) return;
 
-            CreateAppDialog createAppDialog = new CreateAppDialog(apps[index]);
+            var createAppDialog = new CreateAppDialog(apps[index]);
             if (createAppDialog.ShowDialog() == DialogResult.OK)
             {
                 Controls.Remove(apps[index].PictureBox);
@@ -347,12 +344,12 @@ namespace SoftLauncher
                 UpdateLaunchButtonText(launchButton);
                 UpdateSwitchButtonStatus(switchButton);
                 WriteToFile(config.FilePath, apps);
-                Player.PlaySound(PlayerSound.PositiveAction);
+                Player.PlaySound(Sound.PositiveAction);
                 logger.Log(LogType.Edit, apps[index].AppName);
             }
             else
             {
-                Player.PlaySound(PlayerSound.NegativeAction);
+                Player.PlaySound(Sound.NegativeAction);
             }
         }
         private void DeleteApp(object sender, EventArgs e)
@@ -368,12 +365,12 @@ namespace SoftLauncher
             UpdateLaunchButtonText(launchButton);
             UpdateSwitchButtonStatus(switchButton);
             WriteToFile(config.FilePath, apps);
-            Player.PlaySound(PlayerSound.NegativeAction);
+            Player.PlaySound(Sound.NegativeAction);
             logger.Log(LogType.Delete, app.AppName);
         }
         private void LaunchApp(object sender, MouseEventArgs e)
         {
-            Player.PlaySound(PlayerSound.Click);
+            Player.PlaySound(Sound.Click);
             var app = apps.Find(a => a == _currentApp);
             if (app == null) return;
 
