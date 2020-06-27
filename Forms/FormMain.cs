@@ -17,13 +17,13 @@ namespace SoftLauncher
 {
     public partial class FormMain : Form
     {
-        private readonly Config _formConfig = new Config(
-            filePath: "apps.json",
+        private readonly Config config = new Config(
+            jsonFilePath: "apps.json",
             margin: 20,
             iconSize: 64,
             controlButtonSize: 32,
             rowCapacity: 3);
-        private SoundPlayer soundPlayer;
+        private Logger logger = new Logger("log.txt");
         private readonly List<AppEntity> apps = new List<AppEntity>();
         private AppEntity _currentApp = new AppEntity();
         private readonly ControlButton quitButton = new ControlButton(index: 0);
@@ -40,7 +40,7 @@ namespace SoftLauncher
             InitializeComponent();
             DeleteFormBorders(this);
 
-            apps = ReadFromFile(_formConfig.FilePath);
+            apps = ReadFromFile(config.FilePath);
             InitAppImages(
                 apps: apps,
                 switchApp: ClickAppIcon,
@@ -70,7 +70,9 @@ namespace SoftLauncher
                 }
                 catch
                 {
-                    MessageBox.Show($"Can't read apps list from file \"{Environment.CurrentDirectory}\\{filePath}\"", "Read error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    var message = $"Can't read apps list from file \"{Environment.CurrentDirectory}\\{filePath}\"";
+                    MessageBox.Show(message, "Read error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    logger.Log(LogType.Error, message);
                 }
 
                 return AppEntityJson.Convert(jsonApps);
@@ -93,7 +95,9 @@ namespace SoftLauncher
                 }
                 catch
                 {
-                    MessageBox.Show($"Can't write apps list to file \"{Environment.CurrentDirectory}\\{filePath}\"", "Write error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    var message = $"Can't write apps list to file \"{Environment.CurrentDirectory}\\{filePath}\"";
+                    MessageBox.Show(message, "Write error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    logger.Log(LogType.Error, message);
                 }
 
             }
@@ -111,7 +115,7 @@ namespace SoftLauncher
             {
                 app.PictureBox.Name = app.AppName;
                 app.PictureBox.Image = Icon.ExtractAssociatedIcon(app.ExecutePath).ToBitmap();
-                app.SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
+                app.SetSize(new Size(config.IconSize, config.IconSize));
                 app.PictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
                 app.PictureBox.MouseClick += switchApp;
                 app.PictureBox.MouseClick += updateLaunchButtonStatus;
@@ -124,15 +128,15 @@ namespace SoftLauncher
             for (int i = 0; i < apps.Count; ++i)
             {
                 apps[i].PictureBox.Location = new Point(
-                    _formConfig.Margin + i % _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin),
-                    _formConfig.Margin * 2 + _formConfig.ControlButtonSize + i / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin));
+                    config.Margin + i % config.RowCapacity * (config.IconSize + config.Margin),
+                    config.Margin * 2 + config.ControlButtonSize + i / config.RowCapacity * (config.IconSize + config.Margin));
             }
         }
         private void UpdateFormSize(FormMain form)
         {
-            form.Width = _formConfig.Margin + (_formConfig.Margin + _formConfig.IconSize) * _formConfig.RowCapacity;
-            form.Height = _formConfig.Margin * 2 + _formConfig.ControlButtonSize + ((_formConfig.IconSize + _formConfig.Margin) * ((apps.Count - 1) / _formConfig.RowCapacity + 1)) +
-                _formConfig.IconSize + _formConfig.Margin;
+            form.Width = config.Margin + (config.Margin + config.IconSize) * config.RowCapacity;
+            form.Height = config.Margin * 2 + config.ControlButtonSize + ((config.IconSize + config.Margin) * ((apps.Count - 1) / config.RowCapacity + 1)) +
+                config.IconSize + config.Margin;
         }
         private void InitLaunchButton(Button launchButton, EventHandler launchSelectedApps, List<AppEntity> apps)
         {
@@ -143,17 +147,17 @@ namespace SoftLauncher
         }
         private void InitLaunchButtonProps(Button launchButton)
         {
-            launchButton.Size = new Size(Width - 2 * _formConfig.Margin, _formConfig.IconSize);
+            launchButton.Size = new Size(Width - 2 * config.Margin, config.IconSize);
             launchButton.BackColor = Color.PaleGreen;
             launchButton.ForeColor = Color.Black;
             launchButton.FlatStyle = FlatStyle.Flat;
-            launchButton.Font = new Font("San Serif", _formConfig.ControlFontSize, FontStyle.Regular);
+            launchButton.Font = new Font("San Serif", config.ControlFontSize, FontStyle.Regular);
             UpdateLaunchButtonLocation(launchButton);
             UpdateLaunchButtonText(launchButton);
         }
         private void UpdateLaunchButtonLocation(Button launchButton)
         {
-            launchButton.Location = new Point(_formConfig.Margin, Height - _formConfig.Margin - _formConfig.IconSize);
+            launchButton.Location = new Point(config.Margin, Height - config.Margin - config.IconSize);
         }
         private void UpdateLaunchButtonText(Button launchButton) => launchButton.Text = launchButton.Enabled
                 ? "Launch (" + CountActivatedAppIcons(apps) + ")"
@@ -175,10 +179,10 @@ namespace SoftLauncher
 
         private void InitControlButtons(ControlButton quitButton, ControlButton hideButton, ControlButton addButton, ControlButton switchButton)
         {
-            quitButton.Init("X", Color.IndianRed, _formConfig, this, ExitApp);
-            hideButton.Init("-", Color.LightGray, _formConfig, this, HideApp);
-            addButton.Init("+", Color.PaleGreen, _formConfig, this, AddApp);
-            switchButton.Init("", Color.PaleGreen, _formConfig, this, SwitchAll, @"img\check.png");
+            quitButton.Init("X", Color.IndianRed, config, this, ExitApp);
+            hideButton.Init("-", Color.LightGray, config, this, HideApp);
+            addButton.Init("+", Color.PaleGreen, config, this, AddApp);
+            switchButton.Init("", Color.PaleGreen, config, this, SwitchAll, @"img\check.png");
         }
 
         private int CountActivatedAppIcons(List<AppEntity> apps) => apps.Where(app => app.IsSelected).Count();
@@ -198,14 +202,14 @@ namespace SoftLauncher
         private void SelectAllApps(List<AppEntity> apps, object sender, EventArgs e)
         {
             apps.ForEach(app => app.Select());
-            WriteToFile(_formConfig.FilePath, apps);
+            WriteToFile(config.FilePath, apps);
             UpdateSwitchButtonStatus(switchButton);
             UpdateLaunchButtonStatus(sender, e);
         }
         private void UnselectAllApps(List<AppEntity> apps, object sender, EventArgs e)
         {
             apps.ForEach(app => app.Unselect());
-            WriteToFile(_formConfig.FilePath, apps);
+            WriteToFile(config.FilePath, apps);
             UpdateSwitchButtonStatus(switchButton);
             UpdateLaunchButtonStatus(sender, e);
         }
@@ -227,7 +231,7 @@ namespace SoftLauncher
         {
             var app = apps.Find(a => a.PictureBox == picture);
             app.Switch();
-            WriteToFile(_formConfig.FilePath, apps);
+            WriteToFile(config.FilePath, apps);
             UpdateSwitchButtonStatus(switchButton);
         }
         private void MakeCurrent(PictureBox picture)
@@ -272,7 +276,9 @@ namespace SoftLauncher
             }
             catch (Win32Exception)
             {
-                MessageBox.Show("Приложению необходимы права администратора!");
+                var message = "Приложению необходимы права администратора!";
+                MessageBox.Show(message);
+                logger.Log(LogType.Error, message);
             }
             Application.Exit();
         }
@@ -309,15 +315,16 @@ namespace SoftLauncher
             CreateAppDialog createAppDialog = new CreateAppDialog();
             if (createAppDialog.ShowDialog() == DialogResult.OK)
             {
-                var newApp = createAppDialog.appEntity.Clone();
-                apps.Add(newApp as AppEntity);
-                Controls.Add((newApp as AppEntity).PictureBox);
-                InitIconConfig(newApp as AppEntity);
+                var newApp = (createAppDialog.appEntity.Clone() as AppEntity);
+                apps.Add(newApp);
+                Controls.Add(newApp.PictureBox);
+                InitIconConfig(newApp);
                 UpdateFormSize(this);
                 InitLaunchButtonProps(launchButton);
                 UpdateSwitchButtonStatus(switchButton);
-                WriteToFile(_formConfig.FilePath, apps);
+                WriteToFile(config.FilePath, apps);
                 Player.PlaySound(PlayerSound.PositiveAction);
+                logger.Log(LogType.Add, newApp.AppName);
             } 
             else
             {
@@ -339,8 +346,9 @@ namespace SoftLauncher
                 InitIconConfig(apps[index]);
                 UpdateLaunchButtonText(launchButton);
                 UpdateSwitchButtonStatus(switchButton);
-                WriteToFile(_formConfig.FilePath, apps);
+                WriteToFile(config.FilePath, apps);
                 Player.PlaySound(PlayerSound.PositiveAction);
+                logger.Log(LogType.Edit, apps[index].AppName);
             }
             else
             {
@@ -359,8 +367,9 @@ namespace SoftLauncher
             UpdateLaunchButtonLocation(launchButton);
             UpdateLaunchButtonText(launchButton);
             UpdateSwitchButtonStatus(switchButton);
-            WriteToFile(_formConfig.FilePath, apps);
+            WriteToFile(config.FilePath, apps);
             Player.PlaySound(PlayerSound.NegativeAction);
+            logger.Log(LogType.Delete, app.AppName);
         }
         private void LaunchApp(object sender, MouseEventArgs e)
         {
@@ -375,9 +384,9 @@ namespace SoftLauncher
         {
             var index = apps.FindIndex(a => a == app);
             apps[index].PictureBox.Location = new Point(
-                    _formConfig.Margin + index % _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin),
-                    _formConfig.Margin * 2 + _formConfig.ControlButtonSize + index / _formConfig.RowCapacity * (_formConfig.IconSize + _formConfig.Margin));
-            apps[index].SetSize(new Size(_formConfig.IconSize, _formConfig.IconSize));
+                    config.Margin + index % config.RowCapacity * (config.IconSize + config.Margin),
+                    config.Margin * 2 + config.ControlButtonSize + index / config.RowCapacity * (config.IconSize + config.Margin));
+            apps[index].SetSize(new Size(config.IconSize, config.IconSize));
             apps[index].PictureBox.MouseClick += ClickAppIcon;
             apps[index].PictureBox.MouseClick += UpdateLaunchButtonStatus;
         }

@@ -7,6 +7,7 @@ namespace SoftLauncher
 {
     public class AppEntity : ICloneable
     {
+        private readonly Logger logger = new Logger("log.txt");
         public string AppName { get; set; }
         public string ExecutePath { get; set; }
         public TransparentPictureBox PictureBox { get; set; }
@@ -56,10 +57,13 @@ namespace SoftLauncher
             try
             {
                 Process.Start(ExecutePath);
+                logger.Log(LogType.Launch, AppName);
             }
             catch
             {
-                MessageBox.Show($"Failed to start application {AppName}", "Launch app error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                var message = $"Failed to start application {AppName}";
+                MessageBox.Show(message, "Launch app error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                logger.Log(LogType.Error, message);
             }
         }
         public void Switch()

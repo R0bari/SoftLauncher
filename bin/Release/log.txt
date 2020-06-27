@@ -1,0 +1,4 @@
+LAUNCH: Skype
+LAUNCH: Discord
+LAUNCH: Visual Studio Code
+LAUNCH: Visual Studio 2019

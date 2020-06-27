@@ -7,6 +7,7 @@ namespace SoftLauncher.Forms
 {
     public partial class CreateAppDialog : Form
     {
+        public Logger logger = new Logger("log.txt");
         public readonly AppEntity appEntity = new AppEntity();
         private readonly TextBoxWithPlaceholder _appName = new TextBoxWithPlaceholder();
         private Icon icon;
@@ -68,6 +69,7 @@ namespace SoftLauncher.Forms
             catch (WrongFileFormatException ex)
             {
                 MessageBox.Show(ex.Message, ex.MessageCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                logger.Log(LogType.Error ,ex.Message);
             }
         }
         private void Clear(object sender, EventArgs e)
