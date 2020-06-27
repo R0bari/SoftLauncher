@@ -19,5 +19,17 @@ namespace SoftLauncher
             ExecutePath = app.ExecutePath;
             IsSelected = app.IsSelected;
         }
+        public static List<AppEntity> Convert(List<AppEntityJson> jsonApps)
+        {
+            var apps = new List<AppEntity>();
+            jsonApps.ForEach(a => apps.Add(new AppEntity(a)));
+            return apps;
+        }
+        public static List<AppEntityJson> Convert(List<AppEntity> apps)
+        {
+            var jsonApps = new List<AppEntityJson>();
+            apps.ForEach(a => jsonApps.Add(new AppEntityJson(a)));
+            return jsonApps;
+        }
     }
 }

@@ -49,7 +49,7 @@ namespace SoftLauncher
                 addButton: addButton,
                 hideButton: hideButton,
                 switchButton: switchButton);
-            InitLaunchButton(launchButton, LaunchSelectedApps);
+            InitLaunchButton(launchButton, LaunchSelectedApps, apps);
 
             UpdateSwitchButtonStatus(switchButton);
             UpdateLaunchButtonText(launchButton);
@@ -58,7 +58,7 @@ namespace SoftLauncher
         private List<AppEntity> ReadFromFile(string filePath)
         {
 
-            using (StreamReader stream = new StreamReader(filePath))
+            using (var stream = new StreamReader(filePath))
             {
                 var jsonString = stream.ReadToEnd();
                 var jsonApps = new List<AppEntityJson>();
@@ -71,10 +71,7 @@ namespace SoftLauncher
                     MessageBox.Show($"Can't read apps list from file \"{Environment.CurrentDirectory}\\{filePath}\"", "Read error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
-                var apps = new List<AppEntity>();
-                (jsonApps as List<AppEntityJson>).ForEach(jsonApp => apps.Add(new AppEntity(jsonApp)));
-
-                return apps;
+                return AppEntityJson.Convert(jsonApps);
             }
         }
         private void WriteToFile(string filePath, List<AppEntity> apps)
@@ -84,10 +81,9 @@ namespace SoftLauncher
                 File.Create(filePath);
             }
 
-            var jsonApps = new List<AppEntityJson>();
-            apps.ForEach(app => jsonApps.Add(new AppEntityJson(app)));
+            var jsonApps = AppEntityJson.Convert(apps);
 
-            using (StreamWriter stream = new StreamWriter(filePath))
+            using (var stream = new StreamWriter(filePath))
             {
                 try
                 {
@@ -95,7 +91,7 @@ namespace SoftLauncher
                 }
                 catch
                 {
-                    MessageBox.Show("Can't write apps list to file \"{Environment.CurrentDirectory}\\{filePath}\"", "Write error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"Can't write apps list to file \"{Environment.CurrentDirectory}\\{filePath}\"", "Write error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
             }
@@ -138,9 +134,10 @@ namespace SoftLauncher
             form.Height = _formConfig.Margin * 2 + _formConfig.ControlButtonSize + ((_formConfig.IconSize + _formConfig.Margin) * ((apps.Count - 1) / _formConfig.RowCapacity + 1)) +
                 _formConfig.IconSize + _formConfig.Margin;
         }
-        private void InitLaunchButton(Button launchButton, EventHandler launchSelectedApps)
+        private void InitLaunchButton(Button launchButton, EventHandler launchSelectedApps, List<AppEntity> apps)
         {
             InitLaunchButtonProps(launchButton);
+            launchButton.Enabled = apps.Count > 0;
             launchButton.Click += launchSelectedApps;
             Controls.Add(launchButton);
         }
@@ -195,7 +192,7 @@ namespace SoftLauncher
             {
                 UnselectAllApps(apps, sender, e);
             }
-            UpdateLaunchButtonStatus(sender, (MouseEventArgs)e);
+            UpdateLaunchButtonStatus(sender, e);
         }
         private void SelectAllApps(List<AppEntity> apps, object sender, EventArgs e)
         {
@@ -220,7 +217,7 @@ namespace SoftLauncher
             }
             else if (e.Button == MouseButtons.Right)
             {
-                MakeChosen(sender as PictureBox);
+                MakeCurrent(sender as PictureBox);
                 appContextMenu.Show(MousePosition, ToolStripDropDownDirection.Right);
             }
         }
@@ -231,7 +228,7 @@ namespace SoftLauncher
             WriteToFile(_formConfig.FilePath, apps);
             UpdateSwitchButtonStatus(switchButton);
         }
-        private void MakeChosen(PictureBox picture)
+        private void MakeCurrent(PictureBox picture)
         {
             _currentApp = apps.Find(app => app.PictureBox == picture);
         }
