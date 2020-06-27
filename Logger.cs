@@ -21,11 +21,11 @@ namespace SoftLauncher
             {
                 switch (logType)
                 {
-                    case LogType.Add: logText = "ADD: " + logText + Environment.NewLine; break;
-                    case LogType.Edit: logText = "EDIT: " + logText + Environment.NewLine; break;
-                    case LogType.Delete: logText = "DELETE: " + logText + Environment.NewLine; break;
-                    case LogType.Error: logText = "ERROR: " + logText + Environment.NewLine; break;
-                    case LogType.Launch: logText = "LAUNCH: " + logText + Environment.NewLine; break;
+                    case LogType.Add: logText = $"[{DateTime.Now}] ADD: {logText}\n"; break;
+                    case LogType.Edit: logText = $"[{DateTime.Now}] EDIT: {logText}\n"; break;
+                    case LogType.Delete: logText = $"[{DateTime.Now}] DELETE: {logText}\n"; break;
+                    case LogType.Error: logText = $"[{DateTime.Now}] ERROR: {logText}\n"; break;
+                    case LogType.Launch: logText = $"[{DateTime.Now}] LAUNCH: {logText}\n"; break;
                 }
                 var buff = Encoding.Default.GetBytes(logText);
                 stream.Write(buff, 0, buff.Length);

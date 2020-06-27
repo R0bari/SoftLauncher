@@ -54,6 +54,9 @@
     <Compile Include="CustomControls\ControlButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Exceptions\JsonReadException.cs" />
+    <Compile Include="Exceptions\JsonWriteException.cs" />
+    <Compile Include="Exceptions\PlayerSoundException.cs" />
     <Compile Include="Forms\CreateAppDialog.cs">
       <SubType>Form</SubType>
     </Compile>
