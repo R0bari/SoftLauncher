@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SoftLauncher.Exceptions;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -59,11 +60,10 @@ namespace SoftLauncher
                 Process.Start(ExecutePath);
                 logger.Log(LogType.Launch, AppName);
             }
-            catch
+            catch (LaunchAppException ex)
             {
-                var message = $"Failed to start application {AppName}";
-                MessageBox.Show(message, "Launch app error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                logger.Log(LogType.Error, message);
+                MessageBox.Show(ex.Message, ex.MessageCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                logger.Log(LogType.Error, ex.Message);
             }
         }
         public void Switch()

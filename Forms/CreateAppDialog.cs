@@ -7,7 +7,8 @@ namespace SoftLauncher.Forms
 {
     public partial class CreateAppDialog : Form
     {
-        public Logger logger = new Logger("log.txt");
+        public Logger Logger;
+        public bool IsLoggingActive { get; private set; } = false;
         public readonly AppEntity appEntity = new AppEntity();
         private readonly TextBoxWithPlaceholder _appName = new TextBoxWithPlaceholder();
         private Icon icon;
@@ -15,10 +16,16 @@ namespace SoftLauncher.Forms
         private bool _dragFormStatus;
         private int _deltaX, _deltaY;
 
-        public CreateAppDialog(AppEntity appEntity = null)
+        public CreateAppDialog(AppEntity appEntity = null, Logger logger = null)
         {
             InitializeComponent();
             DeleteFormBorders(this);
+
+            if (logger != null)
+            {
+                Logger = logger;
+                IsLoggingActive = true;
+            }
 
             InitAppNameTextBox(_appName);
             BoundAddButtonChanger(ChangeAddButtonStatus);
@@ -69,7 +76,11 @@ namespace SoftLauncher.Forms
             catch (WrongFileFormatException ex)
             {
                 MessageBox.Show(ex.Message, ex.MessageCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                logger.Log(LogType.Error ,ex.Message);
+                if (IsLoggingActive)
+                {
+                    Logger.Log(LogType.Error, ex.Message);
+                }
+
             }
         }
         private void Clear(object sender, EventArgs e)

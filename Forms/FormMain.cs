@@ -25,6 +25,7 @@ namespace SoftLauncher
             controlButtonSize: 32,
             rowCapacity: 3);
         private readonly Logger logger = new Logger("log.txt");
+        private readonly Player player = new Player();
         private readonly Sounds sounds = new Sounds();
         private readonly List<AppEntity> apps = new List<AppEntity>();
         private AppEntity _currentApp = new AppEntity();
@@ -42,6 +43,7 @@ namespace SoftLauncher
             InitializeComponent();
             DeleteFormBorders(this);
 
+            player.AddLogging(logger);
             apps = ReadFromFile(config.FilePath);
             InitAppImages(
                 apps: apps,
@@ -191,7 +193,7 @@ namespace SoftLauncher
         private int CountActivatedAppIcons(List<AppEntity> apps) => apps.Where(app => app.IsSelected).Count();
         private void SwitchAll(object sender, EventArgs e)
         {
-            Player.PlaySound(sounds.Click);
+            player.PlaySound(sounds.Click);
             if (apps.Any(app => !app.IsSelected))
             {
                 SelectAllApps(apps, sender, e);
@@ -221,7 +223,7 @@ namespace SoftLauncher
 
         private void ClickAppIcon(object sender, MouseEventArgs e)
         {
-            Player.PlaySound(sounds.Click);
+            player.PlaySound(sounds.Click);
             if (e.Button == MouseButtons.Left)
             {
                 SwitchApp(sender as PictureBox);
@@ -245,7 +247,7 @@ namespace SoftLauncher
         }
         private void LaunchSelectedApps(object sender, EventArgs e)
         {
-            Player.PlaySound(sounds.Click);
+            player.PlaySound(sounds.Click);
             foreach (var app in apps)
             {
                 if (app.IsSelected)
@@ -261,7 +263,7 @@ namespace SoftLauncher
             {
                 RunWithAdminRight();
             }
-            Player.PlaySound(sounds.Start);
+            player.PlaySound(sounds.Start);
         }
         private bool HasAdminRight()
         {
@@ -304,18 +306,18 @@ namespace SoftLauncher
 
         private void ExitApp(object sender, EventArgs e)
         {
-            Player.PlaySound(sounds.Click);
-            Player.PlaySound(sounds.Exit);
+            player.PlaySound(sounds.Click);
+            player.PlaySound(sounds.Exit);
             Application.Exit();
         }
         private void HideApp(object sender, EventArgs e)
         {
-            Player.PlaySound(sounds.Click);
+            player.PlaySound(sounds.Click);
             WindowState = FormWindowState.Minimized;
         }
         private void AddApp(object sender, EventArgs e)
         {
-            Player.PlaySound(sounds.Click);
+            player.PlaySound(sounds.Click);
             var createAppDialog = new CreateAppDialog();
             if (createAppDialog.ShowDialog() == DialogResult.OK)
             {
@@ -327,17 +329,17 @@ namespace SoftLauncher
                 InitLaunchButtonProps(launchButton);
                 UpdateSwitchButtonStatus(switchButton, apps);
                 WriteToFile(config.FilePath, apps);
-                Player.PlaySound(sounds.PositiveAction);
+                player.PlaySound(sounds.PositiveAction);
                 logger.Log(LogType.Add, newApp.AppName);
             } 
             else
             {
-                Player.PlaySound(sounds.NegativeAction);
+                player.PlaySound(sounds.NegativeAction);
             }
         }
         private void EditApp(object sender, EventArgs e)
         {
-            Player.PlaySound(sounds.Click);
+            player.PlaySound(sounds.Click);
             var index = apps.FindIndex(a => a == _currentApp);
             if (apps[index] == null) return;
 
@@ -351,12 +353,12 @@ namespace SoftLauncher
                 UpdateLaunchButtonText(launchButton);
                 UpdateSwitchButtonStatus(switchButton, apps);
                 WriteToFile(config.FilePath, apps);
-                Player.PlaySound(sounds.PositiveAction);
+                player.PlaySound(sounds.PositiveAction);
                 logger.Log(LogType.Edit, apps[index].AppName);
             }
             else
             {
-                Player.PlaySound(sounds.NegativeAction);
+                player.PlaySound(sounds.PositiveAction);
             }
         }
         private void DeleteApp(object sender, EventArgs e)
@@ -372,12 +374,12 @@ namespace SoftLauncher
             UpdateLaunchButtonText(launchButton);
             UpdateSwitchButtonStatus(switchButton, apps);
             WriteToFile(config.FilePath, apps);
-            Player.PlaySound(sounds.NegativeAction);
+            player.PlaySound(sounds.NegativeAction);
             logger.Log(LogType.Delete, app.AppName);
         }
         private void LaunchApp(object sender, MouseEventArgs e)
         {
-            Player.PlaySound(sounds.Click);
+            player.PlaySound(sounds.Click);
             var app = apps.Find(a => a == _currentApp);
             if (app == null) return;
 

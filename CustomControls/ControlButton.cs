@@ -11,6 +11,7 @@ namespace SoftLauncher
         public ControlButton(int index) : base() 
         {
             Index = index;
+            Tip = new ToolTip();
         }
         public void Init(string text, Color backColor, Config config, Form form, EventHandler action = null, string imagePath = null)
         {
@@ -22,7 +23,6 @@ namespace SoftLauncher
                 Image = Image.FromFile(imagePath);
             }
 
-            Tip = new ToolTip();
             Size = new Size(config.ControlButtonSize, config.ControlButtonSize);
             Font = new Font("San Serif", config.ControlFontSize, FontStyle.Bold);
             Location = new Point(form.Width - (Index + 1) * (config.Margin + config.ControlButtonSize), config.Margin);

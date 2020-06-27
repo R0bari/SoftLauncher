@@ -11,9 +11,10 @@ namespace SoftLauncher
 {
     public class Player
     {
-        private static readonly Logger logger = new Logger("log.txt");
+        public Logger Logger { get; set; }
+        public bool IsLoggingActive { get; private set; } = false;
         public Player() { }
-        public static void PlaySound(Sound sound)
+        public void PlaySound(Sound sound)
         {
             try
             {
@@ -23,8 +24,16 @@ namespace SoftLauncher
             catch (PlayerSoundException ex)
             {
                 MessageBox.Show(ex.Message, ex.MessageCaption, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                logger.Log(LogType.Error, ex.Message);
+                if (IsLoggingActive)
+                {
+                    Logger.Log(LogType.Error, ex.Message);
+                }
             }
+        }
+        public void AddLogging(Logger logger)
+        {
+            Logger = logger;
+            IsLoggingActive = true;
         }
     }
 
